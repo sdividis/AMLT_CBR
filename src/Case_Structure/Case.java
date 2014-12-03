@@ -23,6 +23,8 @@ public class Case {
 	private ArrayList<Solution> solution_list;
 	private ArrayList<Solution_Type> solution_type_list;
 	
+	// List for storing all the solution names matches in an existsSolution() search
+	private ArrayList<ArrayList<Integer>> list_found_solutions;
 	
 	public Case(String domain){
 		this.domain = domain;
@@ -59,51 +61,42 @@ public class Case {
 	 * Checks if exists any solution with the given name/identifier (see Solution.getValuesAndNames())
 	 * 
 	 * @param name String solution unique name/identifier.
-	 * @return ArrayList<Integer> with the hierarchical element position or empty if it doesn't exist.
+	 * @return ArrayList<ArrayList<Integer>> with the hierarchical element positions or empty 
+	 * 			if doesn't exist any. Here are some examples of each of the ArrayList<Integer> 
+	 * 			instances.
 	 * 			Example1: [3, 2, 0]: level0: solution3, level1: component2, level2: component0
 	 * 			Example2: [0, 1]: level0: solution0, level1: component1
 	 */
-	public ArrayList<Integer> existsSolution(String name){
+	public ArrayList<ArrayList<Integer>> existsSolution(String name){
+		list_found_solutions = new ArrayList<ArrayList<Integer>>();
 		ArrayList<Integer> position = new ArrayList<Integer>();
-		boolean found = false;
-		int i = 0; int size = solution_list.size();
-		while(!found && i < size){
+		int size = solution_list.size();
+		for(int i = 0; i < size; i++){
 			ArrayList<Object> val_names  = solution_list.get(i).getValuesAndNames();
-			position = existsSolutionRecursive(name, val_names, new ArrayList<Integer>());
-			if(!position.isEmpty()){
-				found = true;
-				position.remove(0);
-				position.add(0,i);
-			} else {
-				i++;
-			}
+			position = new ArrayList<Integer>();
+			position.add(i);
+			existsSolutionRecursive(name, val_names, position);
 		}
-		return position;
+		return list_found_solutions;
 	}
 	
-	private ArrayList<Integer> existsSolutionRecursive(String name, ArrayList<Object> val_names, ArrayList<Integer> position){
+	/**
+	 * Recursive function for extracting all the occurrences of a given solution name.
+	 */
+	private void existsSolutionRecursive(String name, ArrayList<Object> val_names, ArrayList<Integer> position){
 		String this_name = (String)val_names.get(2);
-		int len_pos = position.size();
 		if(!this_name.equals(name)){
 			int size = val_names.size();
-			int i = 2;
-			boolean found = false;
-			while(!found && i < size){
+			for(int i = 2; i < size; i++){
 				ArrayList<Object> sub_val_names = (ArrayList<Object>)val_names.get(i);
-				position = existsSolutionRecursive(name, sub_val_names, position);
-				if(position.size() > len_pos){
-					found = true;
-					position.remove(len_pos);
-					position.add(len_pos, i-2);
-					position.add(len_pos, -1);
-				} else {
-					i++;
-				}
+				position.add(i-2);
+				existsSolutionRecursive(name, sub_val_names, position);
+				position.remove(position.size()-1);
 			}
 		} else {
-			position.add(-1);
+			// Element found! Add this solution to the list.
+			list_found_solutions.add(position);
 		}
-		return position;
 	}
 	
 	
@@ -118,6 +111,22 @@ public class Case {
 		element.add(attribute_value_list.get(i));
 		element.add(attribute_name_list.get(i));
 		element.add(attribute_type_list.get(i));
+		return element;
+	}
+	
+	/**
+	 * Returns all the information from a solution and its sub-components given
+	 * a hierarchy of indices (see existsSolution());
+	 * 
+	 * @param hierarchy see existsSolution()
+	 * @return ArrayList<Object> composed by two ArrayLists, the first one with 
+	 * 			the value-name pairs and their subcomponents, and the second
+	 * 			with the data types and their subcomponents.
+	 */
+	public ArrayList<Object> getElementSolution(ArrayList<Integer> hierarchy){
+		ArrayList<Object> element = new ArrayList<Object>();
+		element.add(solution_list.get(hierarchy.get(0)).getValuesAndNames(hierarchy));
+		element.add(solution_type_list.get(hierarchy.get(0)).getDataTypes(hierarchy));
 		return element;
 	}
 	

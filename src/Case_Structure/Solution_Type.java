@@ -22,6 +22,10 @@ public class Solution_Type {
 		this.data_type = type;
 	}
 	
+	public ArrayList<Solution_Type> getComponentList(){
+		return this.component_list;
+	}
+	
 	/**
 	 * Adds a new data_type component at the position given by "position".
 	 * @param type String data type.
@@ -45,21 +49,40 @@ public class Solution_Type {
 	/**
 	 * Recursively retrieves a String representation of all the data types for all the components.
 	 * 
-	 * @return String data types hierarchical representation.
+	 * @return ArrayList<Object> data types hierarchical representation.
 	 */
-	public String getDataTypes(){
-		String str = this.data_type;
+	public ArrayList<Object> getDataTypes(){
+		
+		ArrayList<Object> str = new ArrayList<Object>();
+		str.add(this.data_type);
 		int size = this.component_list.size();
 		if(size > 0){
-			str = str + "<";
-			for(int i = 0; i < size-1; i++){
-				str = str + this.component_list.get(i).getDataTypes();
-				str = str + ",";
+			for(int i = 0; i < size; i++){
+				str.add(this.component_list.get(i).getDataTypes());
 			}
-			str = str + this.component_list.get(size-1).getDataTypes();
-			str = str + ">";
 		}
 		return str;
+	}
+	
+	/**
+	 * Returns all the solution data types in an ArrayList keeping its 
+	 * hierarchical structure using also encapsulated ArrayList<String> only from
+	 * a given hierarchical point.
+	 * 
+	 * @param hierarchy ArrayList<Integer> list of integers describing the hierarchy of
+	 * 					the first wanted solution point.
+	 * 			Example1: [3, 2, 0]: level0: solution3, level1: component2, level2: component0
+	 * 			Example2: [0, 1]: level0: solution0, level1: component1
+	 * @return ArrayList<Object> with the list of solutions with the following format: 
+	 * 				[value, name, component0, component1, ..., componentN]
+	 */
+	public ArrayList<Object> getDataTypes(ArrayList<Integer> hierarchy){
+		int size = hierarchy.size();
+		Solution_Type sol = this;
+		for(int i = 1; i < size; i++){
+			sol = sol.getComponentList().get(hierarchy.get(i));
+		}
+		return sol.getDataTypes();
 	}
 	
 	/*

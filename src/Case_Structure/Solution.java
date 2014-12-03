@@ -26,6 +26,10 @@ public class Solution {
 		this.name = name;
 	}
 	
+	public ArrayList<Solution> getComponentList(){
+		return this.component_list;
+	}
+	
 	/**
 	 * Adds a new solution component at the position given.
 	 * @param value Object generic representation of the solution value.
@@ -50,6 +54,7 @@ public class Solution {
 	/**
 	 * Returns all the solution values and names in an ArrayList keeping its 
 	 * hierarchical structure using also encapsulated ArrayList<Object>.
+	 * 
 	 * @return ArrayList<Object> with the list of solutions with the following format: 
 	 * 				[value, name, component0, component1, ..., componentN]
 	 */
@@ -66,5 +71,25 @@ public class Solution {
 		return sol;
 	}
 	
+	/**
+	 * Returns all the solution values and names in an ArrayList keeping its 
+	 * hierarchical structure using also encapsulated ArrayList<Object> only from
+	 * a given hierarchical point.
+	 * 
+	 * @param hierarchy ArrayList<Integer> list of integers describing the hierarchy of
+	 * 					the first wanted solution point.
+	 * 			Example1: [3, 2, 0]: level0: solution3, level1: component2, level2: component0
+	 * 			Example2: [0, 1]: level0: solution0, level1: component1
+	 * @return ArrayList<Object> with the list of solutions with the following format: 
+	 * 				[value, name, component0, component1, ..., componentN]
+	 */
+	public ArrayList<Object> getValuesAndNames(ArrayList<Integer> hierarchy){
+		int size = hierarchy.size();
+		Solution sol = this;
+		for(int i = 1; i < size; i++){
+			sol = sol.getComponentList().get(hierarchy.get(i));
+		}
+		return sol.getValuesAndNames();
+	}
 	
 }
