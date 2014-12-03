@@ -16,36 +16,54 @@ public class Solution {
 	// Generic object representation of any kind of solution value 
 	// (its type is referenced in its equivalent Solution_Type)
 	private Object value;
+	// Name or identifier of the abstract solution type (e.g. ingredient, action, color, etc.)
+	private String name;
 	// Sub-solutions stored in this solution component.
 	private ArrayList<Solution> component_list;
 	
-	public Solution(Object value){
+	public Solution(Object value, String name){
 		this.value = value;
+		this.name = name;
 	}
 	
 	/**
 	 * Adds a new solution component at the position given.
 	 * @param value Object generic representation of the solution value.
+	 * @param name String with the abstract value identifier/name.
 	 * @param position ArrayList<Integer> with the hierarchical position desired 
 	 * 					(each element is a position in the hierarchy). 
 	 * 					If is empty then will be inserted in the top level.
 	 */
-	public void addComponent(Object value, ArrayList<Integer> position){
+	public void addComponent(Object value, String name, ArrayList<Integer> position){
 		if(position.size()==0){
-			this.component_list.add(new Solution(value));
+			this.component_list.add(new Solution(value, name));
 		} else {
 			Solution comp = component_list.get(position.get(0));
 			ArrayList<Integer> new_pos = new ArrayList<Integer>(position);
 			new_pos.remove(0);
-			comp.addComponent(value, new_pos);
+			comp.addComponent(value, name, new_pos);
 			// Maybe not needed because addComponent() already adds the value?
 			//component_list.set(position.get(0), comp);
 		}	
 	}
 	
-	
-	public ArrayList<Solution> getSolution(){
-		return component_list;
+	/**
+	 * Returns all the solution values and names in an ArrayList keeping its 
+	 * hierarchical structure using also encapsulated ArrayList<Object>.
+	 * @return ArrayList<Object> with the list of solutions with the following format: 
+	 * 				[value, name, component0, component1, ..., componentN]
+	 */
+	public ArrayList<Object> getValuesAndNames(){
+		ArrayList<Object> sol = new ArrayList<Object>();
+		sol.add(value);
+		sol.add(name);
+		int size = this.component_list.size();
+		if(size > 0){
+			for(int i = 0; i < size; i++){
+				sol.add(this.component_list.get(i).getValuesAndNames());
+			}
+		}
+		return sol;
 	}
 	
 	

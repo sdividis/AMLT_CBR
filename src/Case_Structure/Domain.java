@@ -12,9 +12,9 @@ public class Domain {
 
 	// Used as an unique id for classifying all the cases from the same domain.
 	private String name;
-	// List of existent attribute/solution types for the current Domain.
-	private ArrayList<String> attribute_type_list;
-	private ArrayList<String> solution_type_list;
+	// List of existent attribute/solution names/identifiers for the current Domain.
+	private ArrayList<String> attribute_name_list;
+	private ArrayList<String> solution_name_list;
 	
 	public Domain(String n){
 		name = n;
@@ -29,65 +29,65 @@ public class Domain {
 		return this.name.equals(name);
 	}
 	
-	public ArrayList<String> getAttributeTypeList(){
-		return attribute_type_list;
+	public ArrayList<String> getAttributeNameList(){
+		return attribute_name_list;
 	}
 	
-	public ArrayList<String> getSolutionTypeList(){
-		return solution_type_list;
+	public ArrayList<String> getSolutionNameList(){
+		return solution_name_list;
 	}
 	
 	/**
-	 * Adds an attribute type previously checking if it exists. 
-	 * @param t String identifying the attribute type.
+	 * Adds an attribute name previously checking if it exists. 
+	 * @param t String identifying the attribute name.
 	 * @return false if already exists or true if has been successfully added.
 	 */
-	public boolean addAttributeType(String t){
-		boolean exists = checkAttributeExists(t);
+	public boolean addAttributeName(String t){
+		boolean exists = existsAttribute(t);
 		if(!exists){
-			attribute_type_list.add(t);
+			attribute_name_list.add(t);
 		}
 		return !exists;
 	}
 	
 	/**
-	 * Adds a solution type previously checking if it exists. 
-	 * @param t String identifying the solution type.
+	 * Adds a solution name previously checking if it exists. 
+	 * @param t String identifying the solution name.
 	 * @return false if already exists or true if has been successfully added.
 	 */
 	public boolean addSolutionType(String t){
-		boolean exists = checkSolutionExists(t);
+		boolean exists = existsSolution(t);
 		if(!exists){
-			solution_type_list.add(t);
+			solution_name_list.add(t);
 		}
 		return !exists;
 	}
 	
 	/**
-	 * Check if a given attribute type exists.
-	 * @param t String identifying the attribute type.
+	 * Check if a given attribute name exists.
+	 * @param t String identifying the attribute name.
 	 * @return true if it exists or false if doesn't exist.
 	 */
-	public boolean checkAttributeExists(String t){
+	public boolean existsAttribute(String t){
 		boolean found = false;
-		int i = 0; int size = attribute_type_list.size();
+		int i = 0; int size = attribute_name_list.size();
 		while(!found && i < size){
-			found = this.attribute_type_list.get(i).equals(t);
+			found = this.attribute_name_list.get(i).equals(t);
 			i++;
 		}
 		return found;
 	}
 	
 	/**
-	 * Check if a given solution type exists.
-	 * @param t String identifying the solution type.
+	 * Check if a given solution name exists.
+	 * @param t String identifying the solution name.
 	 * @return true if it exists or false if doesn't exist.
 	 */
-	public boolean checkSolutionExists(String t){
+	public boolean existsSolution(String t){
 		boolean found = false;
-		int i = 0; int size = solution_type_list.size();
+		int i = 0; int size = solution_name_list.size();
 		while(!found && i < size){
-			found = this.solution_type_list.get(i).equals(t);
+			found = this.solution_name_list.get(i).equals(t);
 			i++;
 		}
 		return found;
