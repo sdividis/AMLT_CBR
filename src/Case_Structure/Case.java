@@ -35,6 +35,15 @@ public class Case {
 	}
 	
 	/**
+	 * Checks if the case is from the domain passed by parameter.
+	 * @param name String representing the domain.
+	 * @return true or false.
+	 */
+	public boolean hasDomain(String name){
+		return this.domain.equals(name);
+	}
+	
+	/**
 	 * Checks if exists any attribute with the given name/identifier.
 	 * 
 	 * @param name String attribute unique name/identifier.
@@ -106,7 +115,7 @@ public class Case {
 	 * @param i int of the attribute position returned.
 	 * @return ArrayList<Object> attribute element with the format: [value, name, type]
 	 */
-	public ArrayList<Object> getElementAttribute(int i){
+	public ArrayList<Object> getAttribute(int i){
 		ArrayList<Object> element = new ArrayList<Object>();
 		element.add(attribute_value_list.get(i));
 		element.add(attribute_name_list.get(i));
@@ -123,7 +132,7 @@ public class Case {
 	 * 			the value-name pairs and their subcomponents, and the second
 	 * 			with the data types and their subcomponents.
 	 */
-	public ArrayList<Object> getElementSolution(ArrayList<Integer> hierarchy){
+	public ArrayList<Object> getSolution(ArrayList<Integer> hierarchy){
 		ArrayList<Object> element = new ArrayList<Object>();
 		element.add(solution_list.get(hierarchy.get(0)).getValuesAndNames(hierarchy));
 		element.add(solution_type_list.get(hierarchy.get(0)).getDataTypes(hierarchy));
@@ -192,5 +201,76 @@ public class Case {
 		solution_type_list.add(position, sol_type);
 	}
 	
+	/**
+	 * Removes the attribute stored in the position passed by parameter and all its related information.
+	 * 
+	 * @param position int with the position provided by existsAttribute()
+	 */
+	public void removeAttribute(int position){
+		if(position < attribute_value_list.size() && position >= 0){
+			attribute_value_list.remove(position);
+			attribute_name_list.remove(position);
+			attribute_type_list.remove(position);
+		} else {
+			throw new IndexOutOfBoundsException("Position " + position + " does not exist in attributes list.");
+		}
+	}
+	
+	/**
+	 * Removes the solution stored in the position passed by parameter as a hierarchical
+	 * index (see existsSolution()) and all its related information.
+	 * 
+	 * @param hierarchy ArrayList<Integer> with the hierarchical position provided by existsSolution()
+	 */
+	public void removeSolution(ArrayList<Integer> hierarchy){
+		if(!hierarchy.isEmpty()){
+			// level 0
+			if(hierarchy.size() == 1){
+				solution_type_list.remove(hierarchy.get(0));
+				solution_list.remove(hierarchy.get(0));
+			// any inner level
+			} else {
+				int pos = (int) hierarchy.get(0);
+				// Retrieves selected solution
+				Solution_Type sol_type = solution_type_list.get(pos);
+				Solution sol = solution_list.get(pos);
+				// Deletes it from the list
+				solution_type_list.remove(pos);
+				solution_list.remove(pos);
+				// Modifies its inner solution components
+				hierarchy.remove(0);
+				sol_type.removeComponent(hierarchy);
+				sol.removeComponent(hierarchy);
+				// Adds again the elements after the modifications
+				solution_type_list.add(pos, sol_type);
+				solution_list.add(pos, sol);
+			}
+		}
+	}
+	
+	/**
+	 * String representation of a Case.
+	 */
+	public String toString(){
+		String str = "[ --- CASE --- ]\n";
+		str += "[ DOMAIN ]\n";
+		str += domain.toString();
+		str += "[ END DOMAIN ]\n";
+		str += "[ ATTRIBUTES ]\n";
+		int size = attribute_value_list.size();
+		for(int i = 0; i < size; i++){
+			str += "< " + "N_" + attribute_name_list.get(i) + "V_" + attribute_value_list.get(i).toString() + "T_" + attribute_type_list.get(i) + " >\n";
+		}
+		str += "[ END ATTRIBUTES ]\n";
+		str += "[ SOLUTIONS ]\n";
+		size = solution_list.size();
+		for(int i = 0; i < size; i++){
+			str += solution_list.get(i).toString() + "\n";
+			str += solution_type_list.get(i).toString() + "\n";
+		}
+		str += "[ END SOLUTIONS ]\n";
+		str += "[ --- END CASE --- ]";
+		return str;
+	}
 
 }

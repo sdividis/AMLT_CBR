@@ -91,4 +91,34 @@ public class Solution_Type {
 	}
 	*/
 	
+	/**
+	 * Removes inner solution_type component stored in position given by "hierarchy" (see Case.existsSolution()).
+	 */
+	public void removeComponent(ArrayList<Integer> hierarchy){
+		if(hierarchy.size() == 1){
+			component_list.remove(hierarchy.get(0));
+		// any inner level
+		} else {
+			int pos = (int)hierarchy.get(0);
+			Solution_Type sol_type = component_list.get(hierarchy.get(0));
+			component_list.remove(pos);
+			hierarchy.remove(0);
+			sol_type.removeComponent(hierarchy);
+			component_list.add(pos, sol_type);
+		}
+	}
+	
+	/**
+	 * String representation of a Solution_Type.
+	 */
+	public String toString(){
+		String str = " < T_" + data_type;
+		int size = component_list.size();
+		for(int i = 0; i < size; i++){
+			str += component_list.get(i).toString();
+		}
+		str += " > ";
+		return str;
+	}
+	
 }

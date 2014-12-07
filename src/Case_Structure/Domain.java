@@ -93,4 +93,30 @@ public class Domain {
 		return found;
 	}
 	
+	/**
+	 * String representation of a Domain instance.
+	 */
+	public String toString(){
+		String str = "Domain name: " + this.name +"\n";
+		// Print attributes
+		str += "Attributes: ";
+		int size = attribute_name_list.size();
+		if(size > 0){
+			for(int i = 0; i < size-1; i++){
+				str += attribute_name_list.get(i) +",";
+			}
+			str += attribute_name_list.get(size-1) +"\n";
+		}
+		// Print solutions
+		str += "Solutions: ";
+		size = solution_name_list.size();
+		if(size > 0){
+			for(int i = 0; i < size-1; i++){
+				str += solution_name_list.get(i) +",";
+			}
+			str += solution_name_list.get(size-1) +"\n";
+		}
+		return str;
+	}
+	
 }

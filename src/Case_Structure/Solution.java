@@ -92,4 +92,34 @@ public class Solution {
 		return sol.getValuesAndNames();
 	}
 	
+	/**
+	 * Removes inner solution component stored in position given by "hierarchy" (see Case.existsSolution()).
+	 */
+	public void removeComponent(ArrayList<Integer> hierarchy){
+		if(hierarchy.size() == 1){
+			component_list.remove(hierarchy.get(0));
+		// any inner level
+		} else {
+			int pos = (int)hierarchy.get(0);
+			Solution sol = component_list.get(pos);
+			component_list.remove(pos);
+			hierarchy.remove(0);
+			sol.removeComponent(hierarchy);
+			component_list.add(pos, sol);
+		}
+	}
+	
+	/**
+	 * String representation of a Solution.
+	 */
+	public String toString(){
+		String str = " < N_" + name + " V_" + value;
+		int size = component_list.size();
+		for(int i = 0; i < size; i++){
+			str += component_list.get(i).toString();
+		}
+		str += " > ";
+		return str;
+	}
+	
 }
