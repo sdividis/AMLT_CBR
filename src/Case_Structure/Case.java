@@ -28,6 +28,11 @@ public class Case {
 	
 	public Case(String domain){
 		this.domain = domain;
+		attribute_value_list = new ArrayList<Object>();
+		attribute_name_list = new ArrayList<String>();
+		attribute_type_list = new ArrayList<String>();
+		solution_list = new ArrayList<Solution>();
+		solution_type_list = new ArrayList<Solution_Type>();
 	}
 	
 	public String getDomain(){
@@ -93,8 +98,12 @@ public class Case {
 	 * Recursive function for extracting all the occurrences of a given solution name.
 	 */
 	private void existsSolutionRecursive(String name, ArrayList<Object> val_names, ArrayList<Integer> position){
-		String this_name = (String)val_names.get(2);
-		if(!this_name.equals(name)){
+		boolean equal = false;
+		try{
+			String this_name = (String)val_names.get(1);
+			equal = this_name.equals(name);
+		}catch(Exception e){}
+		if(!equal){
 			int size = val_names.size();
 			for(int i = 2; i < size; i++){
 				ArrayList<Object> sub_val_names = (ArrayList<Object>)val_names.get(i);
@@ -104,7 +113,8 @@ public class Case {
 			}
 		} else {
 			// Element found! Add this solution to the list.
-			list_found_solutions.add(position);
+			ArrayList<Integer> pos = (ArrayList<Integer>)position.clone();
+			list_found_solutions.add(pos);
 		}
 	}
 	
@@ -255,11 +265,11 @@ public class Case {
 		String str = "[ --- CASE --- ]\n";
 		str += "[ DOMAIN ]\n";
 		str += domain.toString();
-		str += "[ END DOMAIN ]\n";
+		str += "\n[ END DOMAIN ]\n";
 		str += "[ ATTRIBUTES ]\n";
 		int size = attribute_value_list.size();
 		for(int i = 0; i < size; i++){
-			str += "< " + "N_" + attribute_name_list.get(i) + "V_" + attribute_value_list.get(i).toString() + "T_" + attribute_type_list.get(i) + " >\n";
+			str += "  <" + "N_" + attribute_name_list.get(i) + " V_" + attribute_value_list.get(i).toString() + " T_" + attribute_type_list.get(i) + ">\n";
 		}
 		str += "[ END ATTRIBUTES ]\n";
 		str += "[ SOLUTIONS ]\n";
@@ -269,7 +279,7 @@ public class Case {
 			str += solution_type_list.get(i).toString() + "\n";
 		}
 		str += "[ END SOLUTIONS ]\n";
-		str += "[ --- END CASE --- ]";
+		str += "[ --- END CASE --- ]\n";
 		return str;
 	}
 

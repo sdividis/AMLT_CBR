@@ -20,6 +20,7 @@ public class Solution_Type {
 	
 	public Solution_Type(String type){
 		this.data_type = type;
+		component_list = new ArrayList<Solution_Type>();
 	}
 	
 	public ArrayList<Solution_Type> getComponentList(){
@@ -112,12 +113,12 @@ public class Solution_Type {
 	 * String representation of a Solution_Type.
 	 */
 	public String toString(){
-		String str = " < T_" + data_type;
+		String str = "  <T_" + data_type;
 		int size = component_list.size();
 		for(int i = 0; i < size; i++){
 			str += component_list.get(i).toString();
 		}
-		str += " > ";
+		str += "> ";
 		return str;
 	}
 	

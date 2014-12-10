@@ -14,7 +14,10 @@ public class Case_Library {
 	private ArrayList<Case> case_list;
 	private ArrayList<Domain> domain_list;
 	
-	public Case_Library(){}
+	public Case_Library(){
+		case_list = new ArrayList<Case>();
+		domain_list = new ArrayList<Domain>();
+	}
 	
 	/**
 	 * Inserts the given case to the end of the list of cases.
@@ -66,6 +69,8 @@ public class Case_Library {
 		domain_list.add(new Domain(name));
 	}
 	
+	
+	
 	public Domain getDomain(String name) throws Exception{
 		int pos = this.existsDomain(name);
 		Domain dom = new Domain("");
@@ -91,6 +96,17 @@ public class Case_Library {
 		ArrayList<Case> list_cases = new ArrayList<Case>();
 		// TODO: by David
 		return list_cases;
+	}
+
+	/**
+	 * Resets the domain in the given position for the one passed by parameter.
+	 * 
+	 * @param dom
+	 * @param dom1
+	 */
+	public void resetDomain(Domain domain, int pos) {
+		domain_list.remove(pos);
+		domain_list.add(pos, domain);
 	}
 	
 }

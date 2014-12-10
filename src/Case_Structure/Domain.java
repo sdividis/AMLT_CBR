@@ -18,6 +18,8 @@ public class Domain {
 	
 	public Domain(String n){
 		name = n;
+		attribute_name_list = new ArrayList<String>();
+		solution_name_list = new ArrayList<String>();
 	}
 	
 	/**

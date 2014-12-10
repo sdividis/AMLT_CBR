@@ -24,6 +24,7 @@ public class Solution {
 	public Solution(Object value, String name){
 		this.value = value;
 		this.name = name;
+		component_list = new ArrayList<Solution>();
 	}
 	
 	public ArrayList<Solution> getComponentList(){
@@ -113,12 +114,12 @@ public class Solution {
 	 * String representation of a Solution.
 	 */
 	public String toString(){
-		String str = " < N_" + name + " V_" + value;
+		String str = "  <N_" + name + " V_" + value;
 		int size = component_list.size();
 		for(int i = 0; i < size; i++){
 			str += component_list.get(i).toString();
 		}
-		str += " > ";
+		str += "> ";
 		return str;
 	}
 	
