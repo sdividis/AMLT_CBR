@@ -86,6 +86,20 @@ public class Case_Library {
 		return domain_list.get(pos);
 	}
 	
+	public int getNumCases(){
+		return case_list.size();
+	}
+	
+	/**
+	 * Returns the Case in the given position.
+	 * 
+	 * @param pos int.
+	 * @return Case instance.
+	 */
+	public Case getCase(int pos){
+		return case_list.get(pos);
+	}
+	
 	/**
 	 * Returns the k most similar cases to the new case passed by parameter.
 	 * 
