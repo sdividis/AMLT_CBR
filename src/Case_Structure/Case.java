@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Basic structure for a single general Case-Based Reasoning case.
  * 
- * @author Marc Bola–os
+ * @author Marc Bolaï¿½os
  *
  */
 public class Case {
@@ -22,6 +22,9 @@ public class Case {
 	// (non-fixed size but equal to solution_type_list)
 	private ArrayList<Solution> solution_list;
 	private ArrayList<Solution_Type> solution_type_list;
+	
+	// Number of attributes
+	private int numAtributes;
 	
 	// List for storing all the solution names matches in an existsSolution() search
 	private ArrayList<ArrayList<Integer>> list_found_solutions;
@@ -175,6 +178,7 @@ public class Case {
 		attribute_value_list.add(value);
 		attribute_name_list.add(name);
 		attribute_type_list.add(type);
+		this.numAtributes++;
 	}
 	
 	/**
@@ -221,6 +225,7 @@ public class Case {
 			attribute_value_list.remove(position);
 			attribute_name_list.remove(position);
 			attribute_type_list.remove(position);
+			this.numAtributes--;
 		} else {
 			throw new IndexOutOfBoundsException("Position " + position + " does not exist in attributes list.");
 		}
@@ -256,6 +261,14 @@ public class Case {
 				solution_list.add(pos, sol);
 			}
 		}
+	}
+	
+	/**
+	 * Return the number of attributes
+	 * @return
+	 */
+	public int getNumAttributes(){
+		return this.numAtributes;
 	}
 	
 	/**
