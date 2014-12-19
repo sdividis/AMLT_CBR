@@ -132,7 +132,7 @@ public class Similarity {
 					sum += x;
 				//Cases of numerical
 				}else{
-					sum = ((float)targetValue - (float)caseValue)*((float)targetValue - (float)caseValue); 
+					sum = ((Float)targetValue - (Float)caseValue)*((Float)targetValue - (Float)caseValue); 
 				}
 			}
 		}

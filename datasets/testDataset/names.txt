@@ -1,0 +1,3 @@
+att1,att2,att3,sol1<subsol1<subsubsol1>,subsol2>,sol2
+att1,att2,sol1<subsol1,subsol2>
+att1,att2,att3,sol1,sol2

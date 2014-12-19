@@ -31,6 +31,10 @@ public class Domain {
 		return this.name.equals(name);
 	}
 	
+	public String getName(){
+		return name;
+	}
+	
 	public ArrayList<String> getAttributeNameList(){
 		return attribute_name_list;
 	}
