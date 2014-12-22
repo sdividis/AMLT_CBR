@@ -12,6 +12,7 @@ public class TestCreateDataset {
 	
 	public void insertDataset(String path){
 		lib.readDataset(path);
+		System.out.println("Done inserting dataset in " + path);
 	}
 	
 }

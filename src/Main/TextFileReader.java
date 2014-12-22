@@ -28,8 +28,8 @@ public class TextFileReader {
 		ArrayList<String> list = new ArrayList<String>();
 		try{
 			Scanner s = new Scanner(new File(filepath));
-			while (s.hasNext()){
-			    list.add(s.next());
+			while (s.hasNextLine()){
+			    list.add(s.nextLine());
 			}
 			s.close();
 		} catch (IOException e) {
@@ -101,7 +101,7 @@ public class TextFileReader {
 		for(int i = 0; i < nChars; i++){
 			c = line.charAt(i);
 			if (c == '<'){
-				// Found main solution, will continition for sub-solutions
+				// Found main solution, will continue for sub-solutions
 				if(open == 0 && !first){
 					first = true;
 					if(acum_string.length() == 0){
@@ -125,12 +125,15 @@ public class TextFileReader {
 		
 		// Extract sub_solutions
 		if(first && open == 0){
-			ArrayList<String> sub_list = this.splitCommas(acum_string);
-			if(sub_list.size() == 0){
-				list = new ArrayList<String>();
-			} else {
-				for(int i = 0; i < sub_list.size(); i++){
-					list.add(sub_list.get(i));
+			if(acum_string.length() > 0){
+				acum_string = acum_string.substring(1, acum_string.length()-1);
+				ArrayList<String> sub_list = this.splitCommas(acum_string);
+				if(sub_list.size() == 0){
+					list = new ArrayList<String>();
+				} else {
+					for(int i = 0; i < sub_list.size(); i++){
+						list.add(sub_list.get(i));
+					}
 				}
 			}
 		}

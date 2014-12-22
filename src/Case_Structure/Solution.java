@@ -38,18 +38,22 @@ public class Solution {
 	 * @param position ArrayList<Integer> with the hierarchical position desired 
 	 * 					(each element is a position in the hierarchy). 
 	 * 					If is empty then will be inserted in the top level.
+	 * @return inserted_pos with the integer position where the new solution has been inserted.
 	 */
-	public void addComponent(Object value, String name, ArrayList<Integer> position){
+	public int addComponent(Object value, String name, ArrayList<Integer> position){
+		int inserted_pos;
 		if(position.size()==0){
 			this.component_list.add(new Solution(value, name));
+			inserted_pos = component_list.size()-1;
 		} else {
 			Solution comp = component_list.get(position.get(0));
 			ArrayList<Integer> new_pos = new ArrayList<Integer>(position);
 			new_pos.remove(0);
-			comp.addComponent(value, name, new_pos);
+			inserted_pos = comp.addComponent(value, name, new_pos);
 			// Maybe not needed because addComponent() already adds the value?
 			//component_list.set(position.get(0), comp);
-		}	
+		}
+		return inserted_pos;
 	}
 	
 	/**

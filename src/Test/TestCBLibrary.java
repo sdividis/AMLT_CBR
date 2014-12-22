@@ -60,13 +60,16 @@ public class TestCBLibrary {
 		 * in a simplified way it will be: mix(salt,meat(200g))
 		 */
 		// add a general solution object
-		c1.addSolution("mix", "action", "String");
+		int pos_action = c1.addSolution("mix", "action", "String");
+		ArrayList<Integer> hierarchy_pos = new ArrayList<Integer>();
 		
+		/*
 		// find the position of the solution named "action"
 		ArrayList<ArrayList<Integer>> sol_position = c1.existsSolution("action");
 		int pos_action = (int)sol_position.get(0).get(0);
 		sol_position.get(0).remove(0);
 		ArrayList<Integer> hierarchy_pos = sol_position.get(0);
+		*/
 		
 		// insert a sub-solution for the solution "mix"
 		c1.addSolutionComponent(pos_action, (Object)"salt", "ingredient", "String", hierarchy_pos);
@@ -88,7 +91,7 @@ public class TestCBLibrary {
 		
 		
 		/////// Find all ingredients in CASE1 solutions
-		sol_position = c1.existsSolution("ingredient");
+		ArrayList<ArrayList<Integer>> sol_position = c1.existsSolution("ingredient");
 		// PLOTS as an example, the hierarchical positions for all solutions named "ingredient"
 		System.out.println(sol_position);
 		

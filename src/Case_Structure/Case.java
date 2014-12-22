@@ -188,10 +188,12 @@ public class Case {
 	 * @param value Object value of this solution.
 	 * @param name String unique name/identification of this kind of solution in the current domain.
 	 * @param type String representation of the Java data type.
+	 * @return int position in which the solution has been inserted.
 	 */
-	public void addSolution(Object value, String name, String type){
+	public int addSolution(Object value, String name, String type){
 		solution_list.add(new Solution(value, name));
 		solution_type_list.add(new Solution_Type(type));
+		return solution_list.size()-1;
 	}
 	
 	/**
@@ -203,16 +205,18 @@ public class Case {
 	 * @param name String unique name/identification of this kind of solution in the current domain.
 	 * @param type String representation of the Java data type.
 	 * @param hierarchy ArrayList<Integer> with the inner component position (see Solution.addComponent(...))
+	 * @return inserted_pos with the integer position where the new solution has been inserted.
 	 */
-	public void addSolutionComponent(int position, Object value, String name, String type, ArrayList<Integer> hierarchy){
+	public int addSolutionComponent(int position, Object value, String name, String type, ArrayList<Integer> hierarchy){
 		Solution sol = solution_list.get(position);
 		Solution_Type sol_type = solution_type_list.get(position);
-		sol.addComponent(value, name, hierarchy);
+		int inserted_pos = sol.addComponent(value, name, hierarchy);
 		sol_type.addComponent(type, hierarchy);
 		solution_list.remove(position);
 		solution_list.add(position, sol);
 		solution_type_list.remove(position);
 		solution_type_list.add(position, sol_type);
+		return inserted_pos;
 	}
 	
 	/**
@@ -265,7 +269,7 @@ public class Case {
 	
 	/**
 	 * Return the number of attributes
-	 * @return
+	 * @return number of attributes belonging to the case.
 	 */
 	public int getNumAttributes(){
 		return this.numAtributes;

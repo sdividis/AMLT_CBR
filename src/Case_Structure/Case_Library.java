@@ -132,6 +132,7 @@ public class Case_Library {
 		domain_list.add(pos, domain);
 	}
 	
+	
 	/**
 	 * Reads all the information contained in a new DATASET
 	 * 
@@ -198,22 +199,22 @@ public class Case_Library {
 		
 		ArrayList<String> values_list = reader.splitCommas(values);
 		if(values_list.size() == 0){
-			System.err.println("Error: in values, line " + line_pos + ".");
+			System.err.println("Error: in values, line " + line_pos+1 + ".");
 			error = true;
 		}
 		ArrayList<String> names_list = reader.splitCommas(names);
 		if(names_list.size() == 0){
-			System.err.println("Error: in names, line " + line_pos + ".");
+			System.err.println("Error: in names, line " + line_pos+1 + ".");
 			error = true;
 		}
 		ArrayList<String> types_list = reader.splitCommas(types);
 		if(types_list.size() == 0){
-			System.err.println("Error: in types, line " + line_pos + ".");
+			System.err.println("Error: in types, line " + line_pos+1 + ".");
 			error = true;
 		}
 		ArrayList<String> att_sol_list = reader.splitCommas(att_sol);
 		if(att_sol_list.size() == 0){
-			System.err.println("Error: in att_sol, line " + line_pos + ".");
+			System.err.println("Error: in att_sol, line " + line_pos+1 + ".");
 			error = true;
 		}
 		
@@ -235,30 +236,39 @@ public class Case_Library {
 					/** SOLUTION */
 					ArrayList<String> inner_values = reader.getInnerSolutions(values_list.get(i));
 					if(inner_values.size() == 0){
-						System.err.println("Error: in inner_values, line " + line_pos + ", elem " + i + ".");
+						System.err.println("Error: in inner_values, line " + line_pos+1 + ", elem " + i+1 + ".");
 						error = true;
 					}
 					ArrayList<String> inner_names = reader.getInnerSolutions(names_list.get(i));
 					if(inner_names.size() == 0){
-						System.err.println("Error: in inner_names, line " + line_pos + ", elem " + i + ".");
+						System.err.println("Error: in inner_names, line " + line_pos+1 + ", elem " + i+1 + ".");
 						error = true;
 					}
 					ArrayList<String> inner_types = reader.getInnerSolutions(types_list.get(i));
 					if(inner_types.size() == 0){
-						System.err.println("Error: in inner_types, line " + line_pos + ", elem " + i + ".");
+						System.err.println("Error: in inner_types, line " + line_pos+1 + ", elem " + i+1 + ".");
 						error = true;
 					}
-					// TODO: Insert solution in case
-					
-					
+					// Create solution in domain if it doesn't exist
+					if(!domain.existsSolution(inner_names.get(0))){
+						domain.addSolutionType(inner_names.get(0));
+					}
+					// Insert solution in case
+					int sol_pos = new_case.addSolution(inner_values.get(0), inner_names.get(0), inner_types.get(0));
+					// Insert sub-solutions
+					for(int j = 1; j < inner_values.size(); j++){
+						ArrayList<Object> result = this.createCaseSubsolutions(inner_values.get(j), inner_names.get(j), inner_types.get(j), new ArrayList<Integer>(), domain, new_case, sol_pos, reader);
+						domain = (Domain)result.get(0);
+						new_case = (Case)result.get(1);
+					}
 				} else {
-					System.err.println("Error: unknown attribute-solution identifier in line " + line_pos + ", elem " + i + ".");
+					System.err.println("Error: unknown attribute-solution identifier in line " + line_pos+1 + ", elem " + i + ".");
 					error = true;
 				}
 			}
 			
 		} else {
-			System.err.println("Error: number of elements not matching in line " + line_pos + ".");
+			System.err.println("Error: number of elements not matching in line " + line_pos+1 + ".");
 			error = true;
 		}
 		
@@ -266,9 +276,49 @@ public class Case_Library {
 		if(!error){
 			this.resetDomain(domain, domain_pos);
 			this.addCase(new_case);
-			System.out.println(domain);
-			System.out.println(new_case);
 		}
+	}
+	
+	
+	/**
+	 * This recursive method adds all the sub-solutions in the corresponding case.
+	 * 
+	 * @param value solution value String representation to add.
+	 * @param name solution name String representation to add.
+	 * @param type solution type String representation to add.
+	 * @param hierarchy ArrayList<Integer> with the position of the current sub-solution in the hierarchy.
+	 * @param domain Domain that the case belongs to.
+	 * @param new_case Case being created.
+	 * @param sol_pos int position of the main solution where the sub-solutions will be added.
+	 * @param reader TextFileReader for reading the String representations of value, name and type.
+	 * @return ArrayList<Object> with the following format: [DOMAIN, CASE]
+	 */
+	private ArrayList<Object> createCaseSubsolutions(String value, String name, String type, ArrayList<Integer> hierarchy, Domain domain, Case new_case, int sol_pos, TextFileReader reader){
+		
+		/** SUB-SOLUTION */
+		ArrayList<String> inner_values = reader.getInnerSolutions(value);
+		ArrayList<String> inner_names = reader.getInnerSolutions(name);
+		ArrayList<String> inner_types = reader.getInnerSolutions(type);
+		
+		// Create solution in domain if it doesn't exist
+		if(!domain.existsSolution(inner_names.get(0))){
+			domain.addSolutionType(inner_names.get(0));
+		}
+		// Insert solution in case
+		int inserted_pos = new_case.addSolutionComponent(sol_pos, inner_values.get(0), inner_names.get(0), inner_types.get(0), hierarchy);
+		hierarchy.add(inserted_pos);
+		// Insert sub-solutions
+		for(int j = 1; j < inner_values.size(); j++){
+			ArrayList<Object> result = this.createCaseSubsolutions(inner_values.get(j), inner_names.get(j), inner_types.get(j), hierarchy, domain, new_case, sol_pos, reader);
+			domain = (Domain)result.get(0);
+			new_case = (Case)result.get(1);
+		}
+		
+		// Prepare the return data
+		ArrayList<Object> result = new ArrayList<Object>();
+		result.add(domain);
+		result.add(new_case);
+		return result;
 	}
 	
 }

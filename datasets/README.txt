@@ -18,5 +18,4 @@ exactly the same number of comma-separted elements.
 		...,general_solution<sub_solution1,sub_solution2<sub_sub_solution>>,...
 
 
-
-Many datasets for testing are availabel at: https://archive.ics.uci.edu/ml/datasets.html
+Many datasets for testing are available at: https://archive.ics.uci.edu/ml/datasets.html

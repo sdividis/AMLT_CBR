@@ -11,6 +11,7 @@ public class Main {
 		// Retrieve information from a predefined dataset
 		TestCreateDataset testdataset = new TestCreateDataset();
 		testdataset.insertDataset("datasets/testDataset");
+		testdataset.insertDataset("datasets/abalone");
 		
 		// Create Case Base Library test class
 		//TestCBLibrary testcbl = new TestCBLibrary();
