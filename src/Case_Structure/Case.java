@@ -299,5 +299,14 @@ public class Case {
 		str += "[ --- END CASE --- ]\n";
 		return str;
 	}
+	
+	/**
+	 * Copies the solution from case c into the this case.
+	 * @param c Case to get the solution from
+	 */
+	public void copySolution(Case c) {
+		this.solution_type_list = c.solution_type_list;
+		this.solution_list = c.solution_list;
+	}
 
 }
