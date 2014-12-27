@@ -1,0 +1,8 @@
+# Difference knowledge file: indicates how to make a new case which is the difference of the other cases.
+# It is a CSV list which may contain: 
+#     - For String attributes: a string with the filename of the file which indicates how to make the categorical difference. It does not have to contain the extension (it is assumed txt).
+#     - For numerical attributes: a + or a - depending on whether both attributes have to be added or subtracted.
+# Notice that it does not contain a column for the solutions
+# First line is the name of each attribute and the oprtation according to each one is in the second line, in the same column
+att1,att2,att3
+-,att2_diff,-

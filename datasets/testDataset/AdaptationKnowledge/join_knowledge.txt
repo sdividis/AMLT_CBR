@@ -1,0 +1,10 @@
+# Join knowledge file: indicates how to make a join a solution based on two a case which is similar and the case difference.
+# Basically is the operators which have to be applied to the similar case to apply the solution difference
+# It is a CSV list which may contain: 
+#     - For String attributes: a string with the filename of the file which indicates how to make the categorical difference. It does not have to contain the extension (it is assumed txt).
+#     - For numerical solutions: a + or a - depending on whether both solutions have to be added or subtracted.
+#     - For boolean solutions a & and | operators can be used
+# Notice that it does not contain a column for the solutions
+# First line is the names of the solutions and the operation corresponding to them in each column
+sol1,subsol1,subsubsol1,subsol2,sol2
++,+,subsubsol1_join,&,+

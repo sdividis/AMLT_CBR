@@ -1,0 +1,6 @@
+# Joint of solutions. A CSV with three columns indicating:
+#   A,B,C which means that solution joint_solution(A, B) = C. 
+# IT MUST CONTAIN ALL THE COMBINATIONS!!
+good,high,good
+good,good,good
+high,high,high

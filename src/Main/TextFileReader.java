@@ -9,7 +9,7 @@ import java.util.Scanner;
  * Object used for reading and processing all the files that are used to describe
  * the cases in a dataset.
  * 
- * @author Marc Bola–os
+ * @author Marc Bolaï¿½os
  *
  */
 public class TextFileReader {

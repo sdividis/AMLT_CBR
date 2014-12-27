@@ -1,0 +1,10 @@
+# Difference between attributes. A CSV with three columns indicating:
+#   A,B,C which means that attribute attribute_difference(A, B) = C. 
+# If difference makes no sense (as in the Male, Female example) just put a -. In this case, M,M is M as there is no difference
+# IT MUST CONTAIN ALL THE COMBINATIONS!!
+M,M,M
+M,F,-
+M,I,-
+F,F,F
+F,I,-
+I,I,I

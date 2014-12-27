@@ -5,7 +5,7 @@ import java.util.ArrayList;
  * This class allows to create and maintain all the information relative
  * to a data domain.
  * 
- * @author Marc Bola–os
+ * @author Marc Bolaï¿½os
  *
  */
 public class Domain {
