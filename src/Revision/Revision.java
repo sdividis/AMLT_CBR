@@ -22,8 +22,15 @@ public class Revision {
 	
 	private Expert expert;
 	
-	public void setType(int type) {
-		this.policy = type;
+	/**
+	 * Sets the policy to use for Revision operation.
+	 * @param p Integer defining the policy to perform. It can be:
+	 * 		0 : no revision (default)
+			1 : user revision
+			2 : expert revision
+	 */
+	public void setPolicy(int p) {
+		this.policy = p;
 	}
 
 	public Revision()
