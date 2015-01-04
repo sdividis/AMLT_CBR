@@ -68,21 +68,24 @@ public class Similarity {
 		Case c = null;
 		double value;
 		ArrayList<Float> similarities = new ArrayList<Float>();
+	    Map<Double, Integer> map = new TreeMap<Double, Integer>();
+
 		int num_cases = lib.getNumCases();
 		//Iterate all the cases and compute the euclidean distance for each.
 		for(int i=0; i<num_cases; i++){
 			c = lib.getCase(i);
 			value = computeKNN(targetCase, c);	
 			similarities.add((float) value);
+	        map.put(value,i);
 		}
 		
-		//Create the structure to create a vector of index using the distance values.
-		Object[] array = similarities.toArray();
-	    Map<Float, Integer> map = new TreeMap<Float, Integer>();
-	    for (int i = 0; i < array.length; ++i) {
-	        map.put((Float)array[i], i);
-	    }
-	    ArrayList<Integer> indices = new ArrayList<Integer>( map.values());
+//		//Create the structure to create a vector of index using the distance values.
+//		Object[] array = similarities.toArray();
+//	    Map<Float, Integer> map = new TreeMap<Float, Integer>();
+//	    for (int i = 0; i < array.length; ++i) {
+//	        map.put((Float)array[i], i);
+//	    }
+	    ArrayList<Integer> indices = new ArrayList<Integer>(map.values());
 
 	    System.out.println("Similarities: "+similarities);
 		System.out.println("Index \n"+indices);
@@ -124,15 +127,17 @@ public class Similarity {
 				Object caseValue = caseAttribute.get(POS_VALUE);
 				
 				//Distinguish between different type of values and using different method to compute the similarity
-				if(type instanceof String){
+				if(type.equals("string")){
 					x = stringDistance((String) targetValue,(String) caseValue);
 					sum += x;
-				}else if(type instanceof Boolean){
+				}else if(type.equals("boolean")){
 					x = booleanDistance((Boolean) targetValue, (Boolean) caseValue);
 					sum += x;
-				//Cases of numerical
-				}else{
-					sum = ((Float)targetValue - (Float)caseValue)*((Float)targetValue - (Float)caseValue); 
+				}else if(type.equals("float")){
+					float targetFloat = Float.valueOf((String)targetValue);
+					float caseFloat = Float.valueOf((String)caseValue);
+
+					sum = (targetFloat - caseFloat)*(targetFloat - caseFloat); 
 				}
 			}
 		}
