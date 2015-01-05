@@ -3,9 +3,9 @@ package Case_Structure;
 import java.util.ArrayList;
 
 /**
- * Object storing the information of a solution type (which must 
- * match to at least one of the domains' solution types). This means 
- * that the existence of this Solution_Type must be checked in the 
+ * Object storing the information of a solution value-name paire (which must 
+ * match to at least one of the domains' solution names). This means 
+ * that the existence of this Solution must be checked in the 
  * corresponding Domain before creating an object of this type. 
  * 
  * @author Marc Bola–os

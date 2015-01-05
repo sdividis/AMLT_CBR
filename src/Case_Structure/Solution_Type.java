@@ -75,7 +75,7 @@ public class Solution_Type {
 	 * 			Example1: [3, 2, 0]: level0: solution3, level1: component2, level2: component0
 	 * 			Example2: [0, 1]: level0: solution0, level1: component1
 	 * @return ArrayList<Object> with the list of solutions with the following format: 
-	 * 				[value, name, component0, component1, ..., componentN]
+	 * 				[type, component0, component1, ..., componentN]
 	 */
 	public ArrayList<Object> getDataTypes(ArrayList<Integer> hierarchy){
 		int size = hierarchy.size();
