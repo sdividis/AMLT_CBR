@@ -90,6 +90,19 @@ public class TestCBLibrary {
 		lib.addCase(c1);
 		
 		
+		////// Find all solutions in c1
+		int numSol = c1.getNumSolutions(); // get number of high level solutions
+		ArrayList<ArrayList<Object>> solutions_info = new ArrayList<ArrayList<Object>>();
+		// Store all the information [[value, name, subcomponents], [type, subcomponents]] 
+		// from each solution in a position of the array.
+		ArrayList<Integer> hierarchy = new ArrayList<Integer>();
+		for(int i = 0; i < numSol; i++){
+			hierarchy.add(i);
+			solutions_info.add(c1.getSolution(hierarchy));
+			hierarchy = new ArrayList<Integer>();
+		}
+		
+		
 		/////// Find all ingredients in CASE1 solutions
 		ArrayList<ArrayList<Integer>> sol_position = c1.existsSolution("ingredient");
 		// PLOTS as an example, the hierarchical positions for all solutions named "ingredient"

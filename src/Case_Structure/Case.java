@@ -178,7 +178,6 @@ public class Case {
 		attribute_value_list.add(value);
 		attribute_name_list.add(name);
 		attribute_type_list.add(type);
-		this.numAtributes++;
 	}
 	
 	/**
@@ -229,7 +228,6 @@ public class Case {
 			attribute_value_list.remove(position);
 			attribute_name_list.remove(position);
 			attribute_type_list.remove(position);
-			this.numAtributes--;
 		} else {
 			throw new IndexOutOfBoundsException("Position " + position + " does not exist in attributes list.");
 		}
@@ -268,11 +266,19 @@ public class Case {
 	}
 	
 	/**
-	 * Return the number of attributes
+	 * Returns the number of attributes in this case.
 	 * @return number of attributes belonging to the case.
 	 */
 	public int getNumAttributes(){
-		return this.numAtributes;
+		return this.attribute_value_list.size();
+	}
+	
+	/**
+	 * Returns the number of solutions in this case (without counting sub-solutions).
+	 * @return number of solutions belonging to the case.
+	 */
+	public int getNumSolutions(){
+		return this.solution_list.size();
 	}
 	
 	/**

@@ -15,10 +15,10 @@ public class Main {
 		testdataset.insertDataset("datasets/abalone");
 		
 		// Create Case Base Library test class
-		//TestCBLibrary testcbl = new TestCBLibrary();
+		TestCBLibrary testcbl = new TestCBLibrary();
 		
 		//TestRetrieval testRetrieval = new TestRetrieval();
-		TestSimilarity.getSimilarsCases();
+		//TestSimilarity.getSimilarsCases();
 		
 		// Test Adaptation
 //		TestAdaptation ta = new TestAdaptation();
