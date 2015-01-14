@@ -126,18 +126,21 @@ public class Similarity {
 				Object targetValue = targetAttribute.get(POS_VALUE);
 				Object caseValue = caseAttribute.get(POS_VALUE);
 				
+				String typeLower = (String) type;
+				typeLower = typeLower.toLowerCase();
+				
 				//Distinguish between different type of values and using different method to compute the similarity
-				if(type.equals("string")){
+				if(typeLower.equals("string")){
 					x = stringDistance((String) targetValue,(String) caseValue);
 					sum += x;
-				}else if(type.equals("boolean")){
+				}else if(typeLower.equals("boolean")){
 					x = booleanDistance((Boolean) targetValue, (Boolean) caseValue);
 					sum += x;
-				}else if(type.equals("float")){
+				}else if(typeLower.equals("float")){
 					float targetFloat = Float.valueOf((String)targetValue);
 					float caseFloat = Float.valueOf((String)caseValue);
 
-					sum = (targetFloat - caseFloat)*(targetFloat - caseFloat); 
+					sum += (targetFloat - caseFloat)*(targetFloat - caseFloat); 
 				}
 			}
 		}
@@ -149,7 +152,7 @@ public class Similarity {
 	 * Computes euclidean distance between target case and all cases from library.
 	 * @param targetCase
 	 * @return distances ArrayList of doubles containing the similarities.
-	 * @author Albert Busqué
+	 * @author Albert Busquï¿½
 	 */
 	public ArrayList<Double> compute_distances_all_cases(Case targetCase)
 	{

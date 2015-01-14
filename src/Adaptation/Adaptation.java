@@ -162,10 +162,10 @@ public class Adaptation {
 		}
 		else if (method.equals("+")) {
 			if (((String)attA.get(2)).toLowerCase().equals("float")) {
-				diffAtt.set(0, (Double.parseDouble((String)attA.get(0)) + Double.parseDouble((String)attB.get(0))).toString());
+				diffAtt.set(0, String.valueOf((Double.parseDouble((String)attA.get(0)) + Double.parseDouble((String)attB.get(0)))));
 			}
 			else if (((String)attA.get(2)).toLowerCase().equals("int")) {
-				diffAtt.set(0, (Integer.parseInt((String)attA.get(0)) + Integer.parseInt((String)attB.get(0))).toString());
+				diffAtt.set(0, String.valueOf((Integer.parseInt((String)attA.get(0)) + Integer.parseInt((String)attB.get(0)))));
 			}
 			else {
 				throw new Exception("Unknown type " + (String)attA.get(2) + " for method " + method);
@@ -173,10 +173,10 @@ public class Adaptation {
 		}
 		else if (method.equals("-")) {
 			if (((String)attA.get(2)).toLowerCase().equals("float")) {
-				diffAtt.set(0, (Double.parseDouble((String)attA.get(0)) - Double.parseDouble((String)attB.get(0))).toString());
+				diffAtt.set(0, String.valueOf((Double.parseDouble((String)attA.get(0)) - Double.parseDouble((String)attB.get(0)))));
 			}
 			else if (((String)attA.get(2)).toLowerCase().equals("int")) {
-				diffAtt.set(0, (Integer.parseInt((String)attA.get(0)) - Integer.parseInt((String)attB.get(0))).toString());
+				diffAtt.set(0, String.valueOf((Integer.parseInt((String)attA.get(0)) - Integer.parseInt((String)attB.get(0)))));
 			}
 			else {
 				throw new Exception("Unknown type " + (String)attA.get(2) + " for method " + method);
@@ -184,7 +184,7 @@ public class Adaptation {
 		}
 		else if (method.equals("&")) {
 			if (((String)attA.get(2)).toLowerCase().equals("boolean")) {
-				diffAtt.set(0, (Boolean.parseBoolean((String)attA.get(0)) && Boolean.parseBoolean((String)attB.get(0))).toString());
+				diffAtt.set(0, String.valueOf((Boolean.parseBoolean((String)attA.get(0)) && Boolean.parseBoolean((String)attB.get(0)))));
 			}
 			else {
 				throw new Exception("Unknown type " + (String)attA.get(2) + " for method " + method);
@@ -192,7 +192,7 @@ public class Adaptation {
 		}
 		else if (method.equals("|")) {
 			if (((String)attA.get(2)).toLowerCase().equals("boolean")) {
-				diffAtt.set(0, (Boolean.parseBoolean((String)attA.get(0)) || Boolean.parseBoolean((String)attB.get(0))).toString());
+				diffAtt.set(0, String.valueOf((Boolean.parseBoolean((String)attA.get(0)) || Boolean.parseBoolean((String)attB.get(0)))));
 			}
 			else {
 				throw new Exception("Unknown type " + (String)attA.get(2) + " for method " + method);

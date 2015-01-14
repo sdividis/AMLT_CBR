@@ -18,7 +18,7 @@ public class Main {
 		TestCBLibrary testcbl = new TestCBLibrary();
 		
 		//TestRetrieval testRetrieval = new TestRetrieval();
-		//TestSimilarity.getSimilarsCases();
+		TestSimilarity.getSimilarsCases();
 		
 		// Test Adaptation
 //		TestAdaptation ta = new TestAdaptation();

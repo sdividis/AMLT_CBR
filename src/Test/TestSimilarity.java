@@ -19,7 +19,7 @@ public class TestSimilarity {
 		
 		//Get the target case
 		Case newCase = lib.getCase(0);
-		lib.removeCase(0);
+		//lib.removeCase(0);
 		
 		//Get the similars cases
 		Similarity similarity = new Similarity(lib);
