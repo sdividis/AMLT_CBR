@@ -3,6 +3,7 @@ package Revision;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import Case_Structure.Case;
 
@@ -25,7 +26,7 @@ public class Revision {
 	/**
 	 * Sets the policy to use for Revision operation.
 	 * @param p Integer defining the policy to perform. It can be:
-	 * 		0 : no revision (default)
+	 * 		0 : no revision (default, it always returns true)
 			1 : user revision
 			2 : expert revision
 	 */
@@ -43,9 +44,9 @@ public class Revision {
 		this.policy = type;
 	}
 	
-	public Revision(int type, Expert e)
+	public Revision(Expert e)
 	{
-		this.policy = type;
+		this.policy = 2;
 		this.expert = e;
 	}
 
@@ -56,9 +57,6 @@ public class Revision {
 	 */
 	public boolean revise(Case c)
 	{
-		// TODO Know how to extract solution from a Case object 
-		ArrayList<ArrayList<Integer>> list = c.existsSolution("sol1");
-		
 		switch (this.policy)
 		{
 			case 1:
@@ -82,23 +80,22 @@ public class Revision {
 		Scanner scan = new Scanner(System.in);
 		String opt = "";
 		
-		System.out.println("Case to revise: " + c.toString());
+		System.out.println("CASE TO REVISE: \n"+c);
 		System.out.println("Do you agree with the proposed solution? (type yes or not):");
 		
 		/* Get the feedback from the user via keyboard input */
 		boolean ok = false;
+		Pattern p = Pattern.compile("(yes|not)");
 		while(!ok)
 		{
-			try
+			opt = scan.nextLine();
+			if (p.matcher(opt).matches())
 			{
-				opt = scan.next("(yes|not)");
 				ok = true;
 				scan.close();
 			}
-			catch (NoSuchElementException e)
-			{
+			else
 				System.out.println("Please, type yes or not:");
-			}
 		}
 		
 		if (opt.equals("yes"))

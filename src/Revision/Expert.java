@@ -7,5 +7,5 @@ public abstract class Expert {
 	/**
 	 * Returns feedback from an expert for the given Case-solution.
 	 */
-	abstract boolean ask(Case c);
+	public abstract boolean ask(Case c);
 }
