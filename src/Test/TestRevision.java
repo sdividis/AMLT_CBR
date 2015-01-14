@@ -32,8 +32,6 @@ class TestExpert extends Expert {
 }
 
 public class TestRevision {
-	
-	public Case_Library lib;
 
 	public TestRevision(){
 		

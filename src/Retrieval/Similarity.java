@@ -143,5 +143,27 @@ public class Similarity {
 		}
 		total = Math.sqrt(sum);
 		return total;
-	}	
+	}
+	
+	/**
+	 * Computes euclidean distance between target case and all cases from library.
+	 * @param targetCase
+	 * @return distances ArrayList of doubles containing the similarities.
+	 * @author Albert Busqué
+	 */
+	public ArrayList<Double> compute_distances_all_cases(Case targetCase)
+	{
+		double value;
+		int num_cases = lib.getNumCases();
+		ArrayList<Double> distances = new ArrayList<Double>();
+		Case c;
+		
+		//Iterate all the cases and compute the euclidean distance for each.
+		for(int i=0; i<num_cases; i++){
+			c = lib.getCase(i);
+			value = computeKNN(targetCase, c);	
+			distances.add(value);
+		}
+		return distances;
+	}
 }
