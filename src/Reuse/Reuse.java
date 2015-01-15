@@ -8,17 +8,68 @@ import Retrieval.Similarity;
 
 public class Reuse {
 	
-	private double threshold;
+	private double upper_threshold;
+	private double lower_threshold;
 	Similarity similarity;
 	private Case_Library lib;
 	
-	public Reuse(double t, Similarity sim, Case_Library l)
+	/* Integer that defines the type of the revision:
+		0 : TOTAL_REUSE (default)
+		1 : MAXIMAL_DIVERSITY
+		2 : MINIMUM_DIVERSITY
+		3 : BALANCED
+	 */
+	private int policy;
+	
+	public Reuse(int p, Similarity sim, Case_Library l)
 	{
-		this.threshold = t;
+		this.policy = p;
 		this.similarity = sim;
 		this.lib = l;
+		
+		set_thresholds();
 	}
 	
+	public Reuse(Similarity sim, Case_Library l)
+	{
+		this.policy = 0;
+		this.similarity = sim;
+		this.lib = l;
+		
+		set_thresholds();
+	}
+	
+	private void set_thresholds()
+	{
+		switch (this.policy)
+		{
+			case 1: 
+				upper_threshold = 0.9;
+				lower_threshold = 0.7;
+				break;
+			case 2:
+				upper_threshold = 0.3;
+				lower_threshold = 0.1;
+				break;
+			case 3:
+				upper_threshold = 0.9;
+				lower_threshold = 0.1;
+				break;
+			default:
+				upper_threshold = 1.0;
+				lower_threshold = 0.0;
+				break;
+		}
+	}
+	
+	/**
+	 * Method that implements reuse step. 
+	 * First, all distances are computed between c and all cases in library. 
+	 * Then, the mean distance is computed and later normalized between [0,1].
+	 * Finally, according to the policy, it will be reused or not.
+	 * @param c
+	 * @return
+	 */
 	public boolean reuse(Case c)
 	{
 		// Compute euclidean distances with respect to all cases from library 
@@ -30,13 +81,24 @@ public class Reuse {
 		// Normalize the distance
 		Double norm_mean = normalize(distances, mean);
 		
-		if (norm_mean > this.threshold)
+		if (inside_threshold(norm_mean))
 		{
+			System.out.println("-> Adding new case to Library!");
 			lib.addCase(c);
 			return true;
 		}
 		else 
 			return false;
+	}
+	
+	/**
+	 * Check if a value x is inside an interval defined by lower_threshold and upper_threshold class attributes.
+	 * @param x
+	 * @return
+	 */
+	private boolean inside_threshold (Double x)
+	{
+		return (x >= this.lower_threshold) && (x <= this.upper_threshold);
 	}
 	
 	/**
@@ -63,8 +125,8 @@ public class Reuse {
 	 */
 	private Double normalize(ArrayList<Double> vector, Double x)
 	{
-		Double min = Double.MAX_VALUE;
-	    Double max = Double.MIN_VALUE;
+		Double max = Double.MAX_VALUE;
+	    Double min = Double.MIN_VALUE;
 	    
 	    // Get the min value
 	    Double min_val = max;
@@ -82,7 +144,9 @@ public class Reuse {
 				max_val = value;
 		}
 		
-		// Do feature scaling
+		/* Do feature scaling */
+		if (max_val == min_val)
+			return 1.0;		// To avoid division by zero
 		return (x-min_val) / (max_val-min_val);
 	}
 }
