@@ -136,6 +136,10 @@ public class Case {
 		return element;
 	}
 	
+	public void setValue(int i, String value){
+		attribute_value_list.set(i, value);
+	}
+	
 	/**
 	 * Returns all the information from a solution and its sub-components given
 	 * a hierarchy of indices (see existsSolution());

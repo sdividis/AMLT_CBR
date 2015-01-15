@@ -162,6 +162,7 @@ public class Adaptation {
 		}
 		else if (method.equals("+")) {
 			if (((String)attA.get(2)).toLowerCase().equals("float")) {
+
 				diffAtt.set(0, String.valueOf((Double.parseDouble((String)attA.get(0)) + Double.parseDouble((String)attB.get(0)))));
 			}
 			else if (((String)attA.get(2)).toLowerCase().equals("int")) {

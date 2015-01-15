@@ -1,8 +1,10 @@
 package Retrieval;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+
 import Case_Structure.Case;
 import Case_Structure.Case_Library;
 
@@ -21,6 +23,8 @@ public class Similarity {
 	private static int POS_VALUE = 0;
 	private static int POS_NAME = 1;
 	private static int POS_TYPE = 2;
+	HashMap<String, Float> minMap = new HashMap<String, Float>();
+	HashMap<String, Float> maxMap = new HashMap<String, Float>();
 	
 	/**
 	 * Similary class
@@ -28,6 +32,7 @@ public class Similarity {
 	 */
 	public Similarity(Case_Library lib){
 		this.lib = lib;	
+		normalizedLibrary();
 	}
 	
 	/**
@@ -79,12 +84,6 @@ public class Similarity {
 	        map.put(value,i);
 		}
 		
-//		//Create the structure to create a vector of index using the distance values.
-//		Object[] array = similarities.toArray();
-//	    Map<Float, Integer> map = new TreeMap<Float, Integer>();
-//	    for (int i = 0; i < array.length; ++i) {
-//	        map.put((Float)array[i], i);
-//	    }
 	    ArrayList<Integer> indices = new ArrayList<Integer>(map.values());
 
 	    System.out.println("Similarities: "+similarities);
@@ -117,8 +116,8 @@ public class Similarity {
 			//Get the type of the attribute
 			Object type = targetAttribute.get(POS_TYPE);
 			
-			Object targetName = targetAttribute.get(POS_NAME);
-			Object caseName = targetAttribute.get(POS_NAME);
+			String targetName = (String)targetAttribute.get(POS_NAME);
+			String caseName = (String)targetAttribute.get(POS_NAME);
 
 			//Check if the attributes are the same
 			if(targetName.equals(caseName)){
@@ -140,6 +139,9 @@ public class Similarity {
 					float targetFloat = Float.valueOf((String)targetValue);
 					float caseFloat = Float.valueOf((String)caseValue);
 
+					//Normalize the target value	
+//					System.out.println(targetFloat);
+					targetFloat = (targetFloat - minMap.get(targetName)) / (maxMap.get(targetName) - minMap.get(targetName));
 					sum += (targetFloat - caseFloat)*(targetFloat - caseFloat); 
 				}
 			}
@@ -168,5 +170,64 @@ public class Similarity {
 			distances.add(value);
 		}
 		return distances;
+	}
+	
+	/**
+	 * Function to normalized the lib
+	 */
+	public void normalizedLibrary(){
+		System.out.println("\nNormalizing the data...");
+		Case c = null;
+
+		int num_cases = lib.getNumCases();
+		
+		// Extract the min and the max value
+		for(int i=0; i<num_cases; i++){
+			c = lib.getCase(i);
+			for(int j=0; j<c.getNumAttributes(); j++){
+				ArrayList<Object> caseAttribute = c.getAttribute(j);
+				//Get the type of the attribute
+				String type = (String)caseAttribute.get(POS_TYPE);
+				String name = (String)caseAttribute.get(POS_NAME);
+				Object value = caseAttribute.get(POS_VALUE);
+				type = type.toLowerCase();
+				
+				if(type.equals("float")){
+					Float valueF = Float.valueOf((String)value);
+			
+					if(minMap.containsKey(name) && maxMap.containsKey(name)){
+						if(minMap.get(name) > valueF){
+							minMap.put(name, valueF);
+						}else if(maxMap.get(name) < valueF){
+							maxMap.put(name, valueF);
+						}
+					}else{
+						minMap.put(name, valueF);
+						maxMap.put(name, valueF);
+					}
+				}
+			}
+		}
+		
+		// Normalized the data
+		for(int i=0; i<num_cases; i++){
+			c = lib.getCase(i);
+			for(int j=0; j<c.getNumAttributes(); j++){
+				ArrayList<Object> caseAttribute = c.getAttribute(j);
+				//Get the type of the attribute
+				String type = (String)caseAttribute.get(POS_TYPE);
+				String name = (String)caseAttribute.get(POS_NAME);
+				Object value = caseAttribute.get(POS_VALUE);
+				
+				type = type.toLowerCase();
+				if(type.equals("float")){
+					Float normalizedValue =( (Float.valueOf((String)value) - minMap.get(name)) / (maxMap.get(name) - minMap.get(name)));
+					System.out.println("Normalized:"+normalizedValue+" Name:"+name+" Data:"+Float.valueOf((String)value)+ "Min:"+minMap.get(name)+" Max:"+maxMap.get(name));
+					c.setValue(j, String.valueOf(normalizedValue));
+				}
+			}	
+		}
+		System.out.println("Data was normalized!");
+
 	}
 }

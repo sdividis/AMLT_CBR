@@ -12,7 +12,7 @@ import Main.TextFileReader;
  * Case Library structure. In charge of storing and managing all the CBR cases and any
  * of their related information.
  * 
- * @author Marc Bola–os
+ * @author Marc Bolaï¿½os
  *
  */
 public class Case_Library {
@@ -107,6 +107,10 @@ public class Case_Library {
 	 */
 	public Case getCase(int pos){
 		return case_list.get(pos);
+	}
+	
+	public void setCase(int pos, Case c){
+		case_list.set(pos, c);
 	}
 	
 	/**

@@ -24,7 +24,8 @@ public class TestSimilarity {
 		//Get the similars cases
 		Similarity similarity = new Similarity(lib);
 		ArrayList<Case> similarCases = similarity.getSimilarCases(newCase,k);
-		Case similarCase = similarCases.get(0);
+		Case similarCase = similarCases.get(6);
+		//similarCase.removeAttribute(0);
 		
 		Adaptation adapt = new Adaptation(path + "/AdaptationKnowledge", lib);
 		System.out.println("New Case: " + newCase.toString() + "\nSimilar Case: " + similarCase.toString());
