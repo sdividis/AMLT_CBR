@@ -2,6 +2,7 @@ package Retrieval;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -55,9 +56,9 @@ public class Similarity {
 		int x;
 		boolean result = (targetValue == caseValue);
 		if(result){
-			x = 1;
-		}else{
 			x = 0;
+		}else{
+			x = 1;
 		}
 		return x;
 	}
@@ -117,7 +118,7 @@ public class Similarity {
 			Object type = targetAttribute.get(POS_TYPE);
 			
 			String targetName = (String)targetAttribute.get(POS_NAME);
-			String caseName = (String)targetAttribute.get(POS_NAME);
+			String caseName = (String)caseAttribute.get(POS_NAME);
 
 			//Check if the attributes are the same
 			if(targetName.equals(caseName)){
@@ -133,7 +134,7 @@ public class Similarity {
 					x = stringDistance((String) targetValue,(String) caseValue);
 					sum += x;
 				}else if(typeLower.equals("boolean")){
-					x = booleanDistance((Boolean) targetValue, (Boolean) caseValue);
+					x = booleanDistance(Boolean.valueOf((String) targetValue), Boolean.valueOf((String) caseValue));
 					sum += x;
 				}else if(typeLower.equals("float")){
 					float targetFloat = Float.valueOf((String)targetValue);
@@ -170,6 +171,161 @@ public class Similarity {
 			distances.add(value);
 		}
 		return distances;
+	}
+	
+	public Double compute_distance(Case c1, Case c2)
+	{
+		return computeKNN(c1, c2);
+	}
+	
+	/**
+	 * Normalize the case
+	 * @param c
+	 * @return
+	 * @author Albert Busqué
+	 */
+	public Case normalize_case(Case c)
+	{
+		for(int j=0; j<c.getNumAttributes(); j++){
+			ArrayList<Object> caseAttribute = c.getAttribute(j);
+			//Get the type of the attribute
+			String type = (String)caseAttribute.get(POS_TYPE);
+			String name = (String)caseAttribute.get(POS_NAME);
+			Object value = caseAttribute.get(POS_VALUE);
+			
+			type = type.toLowerCase();
+			if(type.equals("float")){
+				Float normalizedValue =( (Float.valueOf((String)value) - minMap.get(name)) / (maxMap.get(name) - minMap.get(name)));
+				System.out.println("Normalized:"+normalizedValue+" Name:"+name+" Data:"+Float.valueOf((String)value)+ "Min:"+minMap.get(name)+" Max:"+maxMap.get(name));
+				c.setValue(j, String.valueOf(normalizedValue));
+			}
+		}
+		return c;
+	}
+	
+	/**
+	 * Computes the mean case from the Case Library
+	 * @author Albert Busqué
+	 * @return
+	 */
+	public Case get_mean_case()
+	{
+		int num_cases = lib.getNumCases();
+		assert num_cases > 0;
+		
+		HashMap<String, HashMap<String, Integer>> list_attributes = new HashMap<String, HashMap<String, Integer>>();
+		HashMap<String, ArrayList<Float>> list_numerical_attributes = new HashMap<String, ArrayList<Float>>();
+		HashMap<String, String> list_types = new HashMap<String, String>();
+		String domain = "";
+		
+		/* Computing the mean case */
+		for(int i=0; i<num_cases; i++)
+		{
+			Case c = lib.getCase(i);
+			if (i==0)
+				domain = c.getDomain();
+			for(int j=0; j<c.getNumAttributes(); j++)
+			{
+				ArrayList<Object> caseAttribute = c.getAttribute(j);
+				
+				//Get the type of the attribute
+				String type = (String)caseAttribute.get(POS_TYPE);
+				String name = (String)caseAttribute.get(POS_NAME);
+				Object value = caseAttribute.get(POS_VALUE);
+				String old_type = type;
+				type = type.toLowerCase();
+				
+				if(type.equals("string") || type.equals("boolean"))
+				{
+					/* If first time, initialize with empty map */
+					if (!list_attributes.containsKey(name))
+					{
+						HashMap<String, Integer> map = new HashMap<String, Integer>();
+						list_attributes.put(name, map);
+						list_types.put(name, old_type);
+					}
+					
+					/* If first time, initialize with counts=0 */
+					if(!list_attributes.get(name).containsKey((String)value))
+						list_attributes.get(name).put((String)value, 0);
+					
+					/* Adding one count for the new string value */
+					int counts = list_attributes.get(name).get((String)value);
+					list_attributes.get(name).put((String)value, counts+1);
+				}
+				/* Accumulating the values of float for later on computing the mean*/
+				else if (type.equals("float"))
+				{
+					/* If first time, initialize with empty map */
+					if (!list_numerical_attributes.containsKey(name))
+					{
+						list_numerical_attributes.put(name, new ArrayList<Float>());
+						list_types.put(name, old_type);
+					}
+					
+					/* Adding the new value */
+					list_numerical_attributes.get(name).add(Float.valueOf((String)value));
+				}
+				else
+				{
+					System.out.println("-> Type still not supported.");
+				}
+			}
+		}
+		
+		/* Creating the new case as mean case */
+		Case new_case = new Case(domain);
+		
+		/* Starting with String attributes. The mean will be the one with more occurences */
+		Iterator it = list_attributes.entrySet().iterator();
+		while (it.hasNext())
+		{
+			Map.Entry<String, HashMap<String, Integer>> pairs = (Map.Entry<String, HashMap<String, Integer>>)it.next();
+			String name = pairs.getKey();
+			/* Search for the max value */
+			HashMap<String, Integer> map = pairs.getValue();
+			int min = 0;
+			String value_max = "";
+			for (String value : map.keySet())
+			{
+				int count = map.get(value);
+				if (count > min)
+				{
+					min = count;
+					value_max = value;
+				}
+			}
+			new_case.addAttribute((Object) value_max, name, list_types.get(name));
+		}
+		
+		/* Numerical attributes */
+		for (String name : list_numerical_attributes.keySet())
+		{
+			ArrayList<Float> vec = list_numerical_attributes.get(name);
+			float mean = mean(vec);
+			/* De-normalize, not used now */
+			//mean = (this.maxMap.get(name) - this.minMap.get(name))*mean + this.minMap.get(name);
+			new_case.addAttribute((Object) String.valueOf(mean), name, list_types.get(name));
+		}
+		
+		return new_case;
+	}
+	
+	/**
+	 * Computes the mean of given vector.
+	 * @param x Vector of numbers
+	 * @return The mean of x
+	 * @author Albert Busqué
+	 */
+	private Float mean(ArrayList<Float> x)
+	{
+		Double sum = 0.0;
+		
+		for (Float value : x)
+		{
+			sum += value;
+		}
+		return (float) (sum/x.size());
 	}
 	
 	/**

@@ -72,16 +72,20 @@ public class Reuse {
 	 */
 	public boolean reuse(Case c)
 	{
-		// Compute euclidean distances with respect to all cases from library 
-		ArrayList<Double> distances = similarity.compute_distances_all_cases(c);
+		/* Get the mean case */
+		Case mean_case = similarity.get_mean_case();
 		
-		// Compute the mean
-		Double mean = mean(distances);
+		/* Compute euclidean distances with mean case and all cases from library */
+		ArrayList<Double> distances = similarity.compute_distances_all_cases(mean_case);
+		
+		// Compute the distance between the mean case and normalized c
+		c = similarity.normalize_case(c);	//Important: new case is normalized here. If it is normalized previously, this line is unnecessary
+		Double dist = similarity.compute_distance(mean_case, c);
 		
 		// Normalize the distance
-		Double norm_mean = normalize(distances, mean);
+		Double norm_dist = normalize(distances, dist);
 		
-		if (inside_threshold(norm_mean))
+		if (inside_threshold(norm_dist))
 		{
 			System.out.println("-> Adding new case to Library!");
 			lib.addCase(c);
