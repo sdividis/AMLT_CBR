@@ -105,7 +105,7 @@ public class Adaptation {
 		}
 		
 		// Apply case retrieval rules
-		applySolution(newCase, similarCase, caseDiff);
+		applySolution(newCase, similarCase, similarDiffCases.get(0));
 	}
 
 	/** Returns the case which is the difference between two cases, applying the rules.
@@ -209,26 +209,27 @@ public class Adaptation {
 	 * 
 	 * @param newCase The case in which the solution has to be applied
 	 * @param similarCase A case similar to the newCase to which the difference has to be applied
-	 * @param caseDiff A case which is used to solve the differences between the similarCase and the newCase	
+	 * @param similarCaseDiff A case which is used to solve the differences between the similarCase and the newCase	
 	 * @throws Exception 
 	 */
-	private void applySolution(Case newCase, Case similarCase, Case caseDiff) throws Exception {
+	private void applySolution(Case newCase, Case similarCase, Case similarCaseDiff) throws Exception {
 		for (String s : joinKnowledge.keySet()) { // For each solution name
 			ArrayList<ArrayList<Integer>> existSimilar = similarCase.existsSolution(s);
-			ArrayList<ArrayList<Integer>> existDiff = caseDiff.existsSolution(s);
+			ArrayList<ArrayList<Integer>> existDiff = similarCaseDiff.existsSolution(s);
 
 			for (int i = 0 ; i < existDiff.size() ; ++i) {
 				if ((i >= existSimilar.size()) || (existDiff.get(i).size() > 0 && existSimilar.get(i).size() == 0)) { // If we have this solution in the differnce but not in the similar we add it as it might solve some difference
-					ArrayList<Object> sol = caseDiff.getSolution(existDiff.get(i));
+					ArrayList<Object> sol = similarCaseDiff.getSolution(existDiff.get(i));
 					newCase.addSolution(((ArrayList<Object>)sol.get(0)).get(0), (String)((ArrayList<Object>)sol.get(0)).get(1), (String)sol.get(2));
 				}
 				else if (existSimilar.get(i).size() == existDiff.get(i).size()) { // If both solutions at the same level
-					ArrayList<Object> solDiff = caseDiff.getSolution(existDiff.get(i));
+					ArrayList<Object> solDiff = similarCaseDiff.getSolution(existDiff.get(i));
 					ArrayList<Object> solSim = similarCase.getSolution(existSimilar.get(i));
 					Object newValue = applyOperation(((ArrayList<Object>)solDiff.get(0)).get(0),
 													 ((ArrayList<Object>)solSim.get(0)).get(0),
-													 (String)solDiff.get(2),
+													 (String)((ArrayList<Object>)solDiff.get(1)).get(0),
 													 joinKnowledge.get(s));
+					newCase.addSolution(newValue, (String)((ArrayList<Object>)solDiff.get(0)).get(1), (String)((ArrayList<Object>)solDiff.get(1)).get(0));
 				}
 			}
 		}

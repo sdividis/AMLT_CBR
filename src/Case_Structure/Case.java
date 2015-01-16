@@ -247,8 +247,8 @@ public class Case {
 		if(!hierarchy.isEmpty()){
 			// level 0
 			if(hierarchy.size() == 1){
-				solution_type_list.remove(hierarchy.get(0));
-				solution_list.remove(hierarchy.get(0));
+				solution_type_list.remove(hierarchy.get(0).intValue());
+				solution_list.remove(hierarchy.get(0).intValue());
 			// any inner level
 			} else {
 				int pos = (int) hierarchy.get(0);

@@ -14,6 +14,7 @@ public class TestAdaptation {
 		
 		Adaptation adapt = new Adaptation(path + "/AdaptationKnowledge", lib);
 		Case newCase = lib.getCase(2);
+		newCase.removeSolution(newCase.existsSolution("Rings").get(0));
 		Case similarCase = lib.getCase(15);
 		System.out.println("New Case: " + newCase.toString() + "\nSimilar Case: " + similarCase.toString());
 		//adapt.NullAdaptation(newCase, similarCase);
