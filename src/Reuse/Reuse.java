@@ -73,7 +73,7 @@ public class Reuse {
 	public boolean reuse(Case c)
 	{
 		/* Get the mean case */
-		Case mean_case = similarity.get_mean_case();
+		Case mean_case = similarity.get_mean_case(null);
 		
 		/* Compute euclidean distances with mean case and all cases from library */
 		ArrayList<Double> distances = similarity.compute_distances_all_cases(mean_case);

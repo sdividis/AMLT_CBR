@@ -208,9 +208,15 @@ public class Similarity {
 	 * @author Albert Busqué
 	 * @return
 	 */
-	public Case get_mean_case()
+	public Case get_mean_case(ArrayList<Case> list)
 	{
-		int num_cases = lib.getNumCases();
+		boolean uselib = list == null || list.size() == 0;
+		int num_cases = 0;
+		
+		if (uselib)
+			num_cases = lib.getNumCases();
+		else
+			num_cases = list.size();
 		assert num_cases > 0;
 		
 		HashMap<String, HashMap<String, Integer>> list_attributes = new HashMap<String, HashMap<String, Integer>>();
@@ -221,7 +227,11 @@ public class Similarity {
 		/* Computing the mean case */
 		for(int i=0; i<num_cases; i++)
 		{
-			Case c = lib.getCase(i);
+			Case c;
+			if (uselib)
+				c = lib.getCase(i);
+			else
+				c = list.get(i);
 			if (i==0)
 				domain = c.getDomain();
 			for(int j=0; j<c.getNumAttributes(); j++)
