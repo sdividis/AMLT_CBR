@@ -8,6 +8,11 @@ import Case_Structure.Case_Library;
 import Main.TextFileReader;
 import Retrieval.Similarity;
 
+/**
+ * Class which handles the implemented Adaptation techniques of the CBR.
+ * @author Cerard Canal
+ *
+ */
 public class Adaptation {
 	private Case_Library clib;
 	// Diff knowledge
@@ -74,6 +79,20 @@ public class Adaptation {
 		return info;
 	}
 	
+	/**
+	 * Adapts a case via the Null Adaptation method, by copying the solution of the case.
+	 * 
+	 * @param newCase Case which needs to be adapted (i.e. has no solution). At the end of the call this case has 
+	 * the solution filled with the result of the adaptation.
+	 * @param k_similar The number of similar cases to use. The mean of those cases will be used as the 'similarCase'.
+	 * @param sim A Similarity object containing the case library to perform operations.
+	 */
+	public void NullAdaptation(Case newCase, int k_similar, Similarity sim) {
+		ArrayList<Case> similarCases = sim.getSimilarCases(newCase, k_similar);
+		Case meanSimilarCase = sim.get_mean_case(similarCases);
+		NullAdaptation(newCase, meanSimilarCase);
+	}
+	
 	/** 
 	 * Adapts a case via the Null Adaptation method, by copying the solution of the case.
 	 * 
@@ -85,14 +104,28 @@ public class Adaptation {
 		newCase.copySolution(similarCase);
 	}
 	
-	/*
-	public void SubstitutionAdaptation(Case newCase, Case similarCase, Similarity sim) throws Exception {
-		ArrayList<Case> caseList = new ArrayList<Case>();
-		caseList.add(similarCase);
-		SubstitutionAdaptation(newCase, caseList, sim);
-	}*/
+
+	/**
+	 * Adapts a case via the Substitution Adaptation method with parameter adjustment.
+	 * @param newCase Case which needs to be adapted (i.e. has no solution). At the end of the method this case his the solution filled in with the result of the adaptation.
+	 * @param k_similar The number of similar cases to use. The mean of those cases will be used as the 'similarCase'.
+	 * @param sim A Similarity object containing the case library to perform operations.
+	 * @throws Exception
+	 */
+	public void SubstitutionAdaptation(Case newCase, int k_similar, Similarity sim) throws Exception {
+		ArrayList<Case> similarCases = sim.getSimilarCases(newCase, k_similar);
+		Case meanSimilarCase = sim.get_mean_case(similarCases);
+		SubstitutionAdaptation(newCase, meanSimilarCase, sim);
+	}
 	
-	public void SubstitutionAdaptation(Case newCase,Case similarCase, Similarity sim) throws Exception {
+	/**
+	 * Adapts a case via the Substituion Adaptation method with parameter adjustment.
+	 * @param newCase Case which needs to be adapted (i.e. has no solution). At the end of the method this case his the solution filled in with the result of the adaptation.
+	 * @param similarCase A case which is similar to the newCase.
+	 * @param sim A Similarity object containing the case library to perform operations.
+	 * @throws Exception
+	 */
+	public void SubstitutionAdaptation(Case newCase, Case similarCase, Similarity sim) throws Exception {
 		//Create Case difference with similarCase
 		Case caseDiff = getCaseDifference(newCase, similarCase); // FIXME change to a more global solution
 		System.out.println("---------------------------\nCaseDifff:\n" + caseDiff.toString());
