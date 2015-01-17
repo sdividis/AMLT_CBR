@@ -52,6 +52,12 @@ public class Similarity {
 		return x;
 	}
 	
+	/**
+	 * Method to compue the distance between two boolean
+	 * @param targetValue First value
+	 * @param caseValue Second value
+	 * @return Return 1 when the boolean are the same, otherwise0
+	 */
 	public int booleanDistance(Boolean targetValue, Boolean caseValue){
 		int x;
 		boolean result = (targetValue == caseValue);
@@ -75,7 +81,8 @@ public class Similarity {
 		double value;
 		ArrayList<Float> similarities = new ArrayList<Float>();
 	    Map<Double, Integer> map = new TreeMap<Double, Integer>();
-
+	    targetCase = normalize_case(targetCase);
+	    
 		int num_cases = lib.getNumCases();
 		//Iterate all the cases and compute the euclidean distance for each.
 		for(int i=0; i<num_cases; i++){
@@ -104,48 +111,68 @@ public class Similarity {
 	 * @param targetCase The new case
 	 * @param c Case of the our Case Library
 	 * @return Return the similarity value
+	 * @author Albert Busqué
 	 */
 	private double computeKNN(Case targetCase, Case c){
+		int j;
 		double total;
+		boolean found;
 		float sum=0, x;
 		int numAttributes = targetCase.getNumAttributes();
+		int numAttributesCase = 0;
 		for(int i=0; i<numAttributes; i++){
-			//Get the attributes
+			found = false;
+			j = 0;
 			ArrayList<Object> targetAttribute = targetCase.getAttribute(i);
-			ArrayList<Object> caseAttribute = c.getAttribute(i);
-			
-			//Get the type of the attribute
-			Object type = targetAttribute.get(POS_TYPE);
-			
 			String targetName = (String)targetAttribute.get(POS_NAME);
-			String caseName = (String)caseAttribute.get(POS_NAME);
+			Object type = targetAttribute.get(POS_TYPE);
 
-			//Check if the attributes are the same
-			if(targetName.equals(caseName)){
-				//Get the value of the attributes
-				Object targetValue = targetAttribute.get(POS_VALUE);
-				Object caseValue = caseAttribute.get(POS_VALUE);
+			numAttributesCase = c.getNumAttributes();
+			
+			//Iterate for all the samples
+			while(!found && j<numAttributesCase){
+				//Get the attributes
+				ArrayList<Object> caseAttribute = c.getAttribute(j);
 				
-				String typeLower = (String) type;
-				typeLower = typeLower.toLowerCase();
+				//Get the type of the attribute
 				
-				//Distinguish between different type of values and using different method to compute the similarity
-				if(typeLower.equals("string")){
-					x = stringDistance((String) targetValue,(String) caseValue);
-					sum += x;
-				}else if(typeLower.equals("boolean")){
-					x = booleanDistance(Boolean.valueOf((String) targetValue), Boolean.valueOf((String) caseValue));
-					sum += x;
-				}else if(typeLower.equals("float")){
-					float targetFloat = Float.valueOf((String)targetValue);
-					float caseFloat = Float.valueOf((String)caseValue);
+				String caseName = (String)caseAttribute.get(POS_NAME);
+				
+				//Check if the attributes are the same
+				if(targetName.equals(caseName)){
+					//Get the value of the attributes
+					Object targetValue = targetAttribute.get(POS_VALUE);
+					Object caseValue = caseAttribute.get(POS_VALUE);
+					
+					String typeLower = (String) type;
+					typeLower = typeLower.toLowerCase();
+					
+					//Distinguish between different type of values and using different method to compute the similarity
+					if(typeLower.equals("string")){
+						x = stringDistance((String) targetValue,(String) caseValue);
+						sum += x;
+					}else if(typeLower.equals("boolean")){
+						x = booleanDistance(Boolean.valueOf((String) targetValue), Boolean.valueOf((String) caseValue));
+						sum += x;
+					}else if(typeLower.equals("float")){
+						float targetFloat = Float.valueOf((String)targetValue);
+						float caseFloat = Float.valueOf((String)caseValue);
 
-					//Normalize the target value	
-//					System.out.println(targetFloat);
-					targetFloat = (targetFloat - minMap.get(targetName)) / (maxMap.get(targetName) - minMap.get(targetName));
-					sum += (targetFloat - caseFloat)*(targetFloat - caseFloat); 
+						//Normalize the target value	
+//						System.out.println(targetFloat);
+						targetFloat = (targetFloat - minMap.get(targetName)) / (maxMap.get(targetName) - minMap.get(targetName));
+						sum += (targetFloat - caseFloat)*(targetFloat - caseFloat); 
+					}
+					found = true;
+				}else{
+					j++;
 				}
 			}
+			
+			if(!found){
+				sum += 1;
+			}
+			
 		}
 		total = Math.sqrt(sum);
 		return total;
@@ -153,12 +180,11 @@ public class Similarity {
 	
 	/**
 	 * Computes euclidean distance between target case and all cases from library.
-	 * @param targetCase
+	 * @param targetCase The new case
 	 * @return distances ArrayList of doubles containing the similarities.
 	 * @author Albert Busqu�
 	 */
-	public ArrayList<Double> compute_distances_all_cases(Case targetCase)
-	{
+	public ArrayList<Double> compute_distances_all_cases(Case targetCase){
 		double value;
 		int num_cases = lib.getNumCases();
 		ArrayList<Double> distances = new ArrayList<Double>();
@@ -173,8 +199,7 @@ public class Similarity {
 		return distances;
 	}
 	
-	public Double compute_distance(Case c1, Case c2)
-	{
+	public Double compute_distance(Case c1, Case c2){
 		return computeKNN(c1, c2);
 	}
 	
@@ -388,7 +413,7 @@ public class Similarity {
 				type = type.toLowerCase();
 				if(type.equals("float")){
 					Float normalizedValue =( (Float.valueOf((String)value) - minMap.get(name)) / (maxMap.get(name) - minMap.get(name)));
-					System.out.println("Normalized:"+normalizedValue+" Name:"+name+" Data:"+Float.valueOf((String)value)+ "Min:"+minMap.get(name)+" Max:"+maxMap.get(name));
+//					System.out.println("Normalized:"+normalizedValue+" Name:"+name+" Data:"+Float.valueOf((String)value)+ "Min:"+minMap.get(name)+" Max:"+maxMap.get(name));
 					c.setValue(j, String.valueOf(normalizedValue));
 				}
 			}	

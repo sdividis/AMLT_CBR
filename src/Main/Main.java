@@ -3,6 +3,7 @@ package Main;
 import Test.TestAdaptation;
 import Test.TestCBLibrary;
 import Test.TestCreateDataset;
+import Test.TestSimilarity;
 
 public class Main {
 
@@ -17,7 +18,7 @@ public class Main {
 		TestCBLibrary testcbl = new TestCBLibrary();
 		
 		//TestRetrieval testRetrieval = new TestRetrieval();
-	//	TestSimilarity.getSimilarsCases();
+//		TestSimilarity.getSimilarsCases();
 		
 		// Test Adaptation
 		TestAdaptation ta = new TestAdaptation();
