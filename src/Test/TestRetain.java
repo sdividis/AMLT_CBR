@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import Case_Structure.Case;
 import Case_Structure.Case_Library;
 import Case_Structure.Domain;
+import Retain.Retain;
 import Retrieval.Similarity;
-import Reuse.Reuse;
 
-public class TestReuse {
+public class TestRetain {
 
-	public TestReuse()
+	public TestRetain()
 	{
 		Case_Library lib = new Case_Library();
 		
@@ -64,13 +64,13 @@ public class TestReuse {
 		c3.addAttribute((Object) "50.0", "time", "Float");
 		
 		Similarity sim = new Similarity(lib);
-		Reuse r = new Reuse(sim, lib);
-		r.reuse(c3);
+		Retain r = new Retain(sim, lib);
+		r.retain(c3);
 		
 	}
 	
 	public static void main(String[] args) {
 		
-		new TestReuse();
+		new TestRetain();
 	}
 }
