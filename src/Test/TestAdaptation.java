@@ -19,6 +19,12 @@ public class TestAdaptation {
 		System.out.println("New Case: " + newCase.toString() + "\nSimilar Case: " + similarCase.toString());
 		//adapt.NullAdaptation(newCase, similarCase);
 		adapt.SubstitutionAdaptation(newCase, similarCase, new Similarity(lib));
+		
+		/*
+		 * 		int k = 3;
+		//adapt.NullAdaptation(newCase, k, new Similarity(lib));
+		adapt.SubstitutionAdaptation(newCase, k, new Similarity(lib));
+		 */
 		System.out.println("------------------------ After adaptation ------------------------");
 		System.out.println("New Case: " + newCase.toString() + "\nSimilar Case: " + similarCase.toString());
 	}

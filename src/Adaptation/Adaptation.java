@@ -87,11 +87,19 @@ public class Adaptation {
 	 * @param k_similar The number of similar cases to use. The mean of those cases will be used as the 'similarCase'.
 	 * @param sim A Similarity object containing the case library to perform operations.
 	 */
-	public void NullAdaptation(Case newCase, int k_similar, Similarity sim) {
+	/*public void NullAdaptation(Case newCase, int k_similar, Similarity sim) {
+		assert(k_similar > 0);
 		ArrayList<Case> similarCases = sim.getSimilarCases(newCase, k_similar);
-		Case meanSimilarCase = sim.get_mean_case(similarCases);
+		Case meanSimilarCase;
+		if (k_similar > 1)
+			meanSimilarCase = sim.get_mean_case(similarCases);
+		else
+			meanSimilarCase = similarCases.get(0);
+		
+		System.out.println("Mean Similar Case: " + meanSimilarCase.toString());
+
 		NullAdaptation(newCase, meanSimilarCase);
-	}
+	}*/
 	
 	/** 
 	 * Adapts a case via the Null Adaptation method, by copying the solution of the case.
@@ -112,11 +120,18 @@ public class Adaptation {
 	 * @param sim A Similarity object containing the case library to perform operations.
 	 * @throws Exception
 	 */
-	public void SubstitutionAdaptation(Case newCase, int k_similar, Similarity sim) throws Exception {
+	/*public void SubstitutionAdaptation(Case newCase, int k_similar, Similarity sim) throws Exception {
+		assert(k_similar > 0);
 		ArrayList<Case> similarCases = sim.getSimilarCases(newCase, k_similar);
-		Case meanSimilarCase = sim.get_mean_case(similarCases);
+		Case meanSimilarCase;
+		if (k_similar > 1)
+			meanSimilarCase = sim.get_mean_case(similarCases);
+		else
+			meanSimilarCase = similarCases.get(0);
+		System.out.println("Mean Similar Case: " + meanSimilarCase.toString());
+
 		SubstitutionAdaptation(newCase, meanSimilarCase, sim);
-	}
+	}*/
 	
 	/**
 	 * Adapts a case via the Substituion Adaptation method with parameter adjustment.
@@ -148,7 +163,7 @@ public class Adaptation {
 	 * @return The difference case
 	 * @throws Exception When a method is not known
 	 */
-	public Case getCaseDifference(Case a, Case b) throws Exception {
+	private Case getCaseDifference(Case a, Case b) throws Exception {
 		assert(/*a.getNumAttributes() == b.getNumAttributes() && */a.getDomain().equals(b.getDomain()));
 		Case retCase = new Case(a.getDomain());
 		HashSet<String> usedAtts = new HashSet<String>();

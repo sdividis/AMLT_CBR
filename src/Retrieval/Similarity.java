@@ -388,7 +388,7 @@ public class Similarity {
 				type = type.toLowerCase();
 				if(type.equals("float")){
 					Float normalizedValue =( (Float.valueOf((String)value) - minMap.get(name)) / (maxMap.get(name) - minMap.get(name)));
-					System.out.println("Normalized:"+normalizedValue+" Name:"+name+" Data:"+Float.valueOf((String)value)+ "Min:"+minMap.get(name)+" Max:"+maxMap.get(name));
+					//System.out.println("Normalized:"+normalizedValue+" Name:"+name+" Data:"+Float.valueOf((String)value)+ "Min:"+minMap.get(name)+" Max:"+maxMap.get(name));
 					c.setValue(j, String.valueOf(normalizedValue));
 				}
 			}	
