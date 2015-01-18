@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import Case_Structure.Case;
 import Case_Structure.Case_Library;
+import java.math.*;
 
 
 /**
@@ -52,6 +53,12 @@ public class Similarity {
 		return x;
 	}
 	
+	/**
+	 * Method to compue the distance between two boolean
+	 * @param targetValue First value
+	 * @param caseValue Second value
+	 * @return Return 1 when the boolean are the same, otherwise0
+	 */
 	public int booleanDistance(Boolean targetValue, Boolean caseValue){
 		int x;
 		boolean result = (targetValue == caseValue);
@@ -75,7 +82,8 @@ public class Similarity {
 		double value;
 		ArrayList<Float> similarities = new ArrayList<Float>();
 	    Map<Double, Integer> map = new TreeMap<Double, Integer>();
-
+	    targetCase = normalize_case(targetCase);
+	    
 		int num_cases = lib.getNumCases();
 		//Iterate all the cases and compute the euclidean distance for each.
 		for(int i=0; i<num_cases; i++){
@@ -104,48 +112,68 @@ public class Similarity {
 	 * @param targetCase The new case
 	 * @param c Case of the our Case Library
 	 * @return Return the similarity value
+	 * @author Albert Busqué
 	 */
 	private double computeKNN(Case targetCase, Case c){
+		int j;
 		double total;
+		boolean found;
 		float sum=0, x;
 		int numAttributes = targetCase.getNumAttributes();
+		int numAttributesCase = 0;
 		for(int i=0; i<numAttributes; i++){
-			//Get the attributes
+			found = false;
+			j = 0;
 			ArrayList<Object> targetAttribute = targetCase.getAttribute(i);
-			ArrayList<Object> caseAttribute = c.getAttribute(i);
-			
-			//Get the type of the attribute
-			Object type = targetAttribute.get(POS_TYPE);
-			
 			String targetName = (String)targetAttribute.get(POS_NAME);
-			String caseName = (String)caseAttribute.get(POS_NAME);
+			Object type = targetAttribute.get(POS_TYPE);
 
-			//Check if the attributes are the same
-			if(targetName.equals(caseName)){
-				//Get the value of the attributes
-				Object targetValue = targetAttribute.get(POS_VALUE);
-				Object caseValue = caseAttribute.get(POS_VALUE);
+			numAttributesCase = c.getNumAttributes();
+			
+			//Iterate for all the samples
+			while(!found && j<numAttributesCase){
+				//Get the attributes
+				ArrayList<Object> caseAttribute = c.getAttribute(j);
 				
-				String typeLower = (String) type;
-				typeLower = typeLower.toLowerCase();
+				//Get the type of the attribute
 				
-				//Distinguish between different type of values and using different method to compute the similarity
-				if(typeLower.equals("string")){
-					x = stringDistance((String) targetValue,(String) caseValue);
-					sum += x;
-				}else if(typeLower.equals("boolean")){
-					x = booleanDistance(Boolean.valueOf((String) targetValue), Boolean.valueOf((String) caseValue));
-					sum += x;
-				}else if(typeLower.equals("float")){
-					float targetFloat = Float.valueOf((String)targetValue);
-					float caseFloat = Float.valueOf((String)caseValue);
+				String caseName = (String)caseAttribute.get(POS_NAME);
+				
+				//Check if the attributes are the same
+				if(targetName.equals(caseName)){
+					//Get the value of the attributes
+					Object targetValue = targetAttribute.get(POS_VALUE);
+					Object caseValue = caseAttribute.get(POS_VALUE);
+					
+					String typeLower = (String) type;
+					typeLower = typeLower.toLowerCase();
+					
+					//Distinguish between different type of values and using different method to compute the similarity
+					if(typeLower.equals("string")){
+						x = stringDistance((String) targetValue,(String) caseValue);
+						sum += x;
+					}else if(typeLower.equals("boolean")){
+						x = booleanDistance(Boolean.valueOf((String) targetValue), Boolean.valueOf((String) caseValue));
+						sum += x;
+					}else if(typeLower.equals("float")){
+						float targetFloat = Float.valueOf((String)targetValue);
+						float caseFloat = Float.valueOf((String)caseValue);
 
-					//Normalize the target value	
-//					System.out.println(targetFloat);
-					targetFloat = (targetFloat - minMap.get(targetName)) / (maxMap.get(targetName) - minMap.get(targetName));
-					sum += (targetFloat - caseFloat)*(targetFloat - caseFloat); 
+						//Normalize the target value	
+//						System.out.println(targetFloat);
+						targetFloat = (targetFloat - minMap.get(targetName)) / (maxMap.get(targetName) - minMap.get(targetName));
+						sum += (targetFloat - caseFloat)*(targetFloat - caseFloat); 
+					}
+					found = true;
+				}else{
+					j++;
 				}
 			}
+			
+			if(!found){
+				sum += 1;
+			}
+			
 		}
 		total = Math.sqrt(sum);
 		return total;
@@ -153,12 +181,11 @@ public class Similarity {
 	
 	/**
 	 * Computes euclidean distance between target case and all cases from library.
-	 * @param targetCase
+	 * @param targetCase The new case
 	 * @return distances ArrayList of doubles containing the similarities.
 	 * @author Albert Busqu�
 	 */
-	public ArrayList<Double> compute_distances_all_cases(Case targetCase)
-	{
+	public ArrayList<Double> compute_distances_all_cases(Case targetCase){
 		double value;
 		int num_cases = lib.getNumCases();
 		ArrayList<Double> distances = new ArrayList<Double>();
@@ -173,8 +200,7 @@ public class Similarity {
 		return distances;
 	}
 	
-	public Double compute_distance(Case c1, Case c2)
-	{
+	public Double compute_distance(Case c1, Case c2){
 		return computeKNN(c1, c2);
 	}
 	
@@ -210,6 +236,10 @@ public class Similarity {
 	 */
 	public Case get_mean_case(ArrayList<Case> list)
 	{
+		ArrayList<HashMap<String, Integer>> skeleton = get_skeleton_mean_case(list);
+		HashMap<String, Integer> mean_ocurr = skeleton.get(0);
+		HashMap<String, Integer> ocurr = skeleton.get(1);
+		
 		boolean uselib = list == null || list.size() == 0;
 		int num_cases = 0;
 		
@@ -287,30 +317,40 @@ public class Similarity {
 		Case new_case = new Case(domain);
 		
 		/* Starting with String attributes. The mean will be the one with more occurences */
-		Iterator it = list_attributes.entrySet().iterator();
-		while (it.hasNext())
+		for (String name : list_attributes.keySet())
 		{
-			Map.Entry<String, HashMap<String, Integer>> pairs = (Map.Entry<String, HashMap<String, Integer>>)it.next();
-			String name = pairs.getKey();
-			/* Search for the max value */
-			HashMap<String, Integer> map = pairs.getValue();
-			int min = 0;
-			String value_max = "";
-			for (String value : map.keySet())
+			if (ocurr.get(name) < 2)
+				continue;
+			
+			int mean_ocurr_value = mean_ocurr.get(name);
+			HashMap<String, Integer> map = list_attributes.get(name);
+			for (int i=0; i<mean_ocurr_value; i++)
 			{
-				int count = map.get(value);
-				if (count > min)
+				/* Search for the max value */
+				int min = 0;
+				String value_max = "";
+				for (String value : map.keySet())
 				{
-					min = count;
-					value_max = value;
+					int count = map.get(value);
+					if (count > min)
+					{
+						min = count;
+						value_max = value;
+					}
 				}
+				/* Remove the maximum value from the map in order to search again for the max */
+				map.remove(value_max);
+				
+				/* Adding the attribute */
+				new_case.addAttribute((Object) value_max, name, list_types.get(name));
 			}
-			new_case.addAttribute((Object) value_max, name, list_types.get(name));
 		}
 		
 		/* Numerical attributes */
 		for (String name : list_numerical_attributes.keySet())
 		{
+			if (ocurr.get(name) < 2)
+				continue;
 			ArrayList<Float> vec = list_numerical_attributes.get(name);
 			float mean = mean(vec);
 			/* De-normalize, not used now */
@@ -319,6 +359,84 @@ public class Similarity {
 		}
 		
 		return new_case;
+	}
+	
+	private ArrayList<HashMap<String, Integer>> get_skeleton_mean_case(ArrayList<Case> list)
+	{
+		boolean uselib = list == null || list.size() == 0;
+		int num_cases = 0;
+		float mean = 0.f;
+		
+		if (uselib)
+			num_cases = lib.getNumCases();
+		else
+			num_cases = list.size();
+		assert num_cases > 0;
+		
+		HashMap<String, Float> mean_attributes_ocurrences = new HashMap<String, Float>();
+		HashMap<String, Integer> nelems = new HashMap<String, Integer>();
+		HashMap<String, Integer> counts = new HashMap<String, Integer>();
+		
+		/* Store a list of all possible name attributes and their mean occurrence */
+		for(int i=0; i<num_cases; i++)
+		{
+			Case c;
+			if (uselib)
+				c = lib.getCase(i);
+			else
+				c = list.get(i);
+			
+			for(int j=0; j<c.getNumAttributes(); j++)
+			{
+				ArrayList<Object> caseAttribute = c.getAttribute(j);
+				
+				//Get the type of the attribute
+				String type = (String)caseAttribute.get(POS_TYPE);
+				String name = (String)caseAttribute.get(POS_NAME);
+				Object value = caseAttribute.get(POS_VALUE);
+				String old_type = type;
+				type = type.toLowerCase();
+				
+				/* Initialize maps */
+				if (!mean_attributes_ocurrences.containsKey(name))
+				{
+					mean_attributes_ocurrences.put(name, 0.f);
+					nelems.put(name, 0);
+				}
+				
+				if (!counts.containsKey(name))
+					counts.put(name, 0);
+				
+				/* Add one count */
+				counts.put(name, counts.get(name)+1);
+			}
+			
+			/* Compute mean on-the-fly for each attribute */
+			for (String s : counts.keySet())
+			{
+				mean = mean_attributes_ocurrences.get(s);
+				mean = (mean*nelems.get(s) +  counts.get(s)) / (nelems.get(s)+1);
+				mean_attributes_ocurrences.put(s, mean);
+				
+				nelems.put(s, nelems.get(s)+1);
+			}
+			
+			counts.clear();
+		}
+		
+		/* Rounding the mean in order to output a integer value */
+		counts.clear();
+		for (String s : mean_attributes_ocurrences.keySet())
+		{
+			int n = Math.round(mean_attributes_ocurrences.get(s));
+			counts.put(s, n);
+		}
+		
+		ArrayList<HashMap<String, Integer>> out = new ArrayList<HashMap<String, Integer>>();
+		out.add(counts);
+		out.add(nelems);
+		
+		return out;
 	}
 	
 	/**
@@ -389,6 +507,7 @@ public class Similarity {
 				if(type.equals("float")){
 					Float normalizedValue =( (Float.valueOf((String)value) - minMap.get(name)) / (maxMap.get(name) - minMap.get(name)));
 					//System.out.println("Normalized:"+normalizedValue+" Name:"+name+" Data:"+Float.valueOf((String)value)+ "Min:"+minMap.get(name)+" Max:"+maxMap.get(name));
+
 					c.setValue(j, String.valueOf(normalizedValue));
 				}
 			}	

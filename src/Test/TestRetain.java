@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import Case_Structure.Case;
 import Case_Structure.Case_Library;
 import Case_Structure.Domain;
+import Retain.Retain;
 import Retrieval.Similarity;
-import Reuse.Reuse;
 
-public class TestReuse {
+public class TestRetain {
 
-	public TestReuse()
+	public TestRetain()
 	{
 		Case_Library lib = new Case_Library();
 		
@@ -40,8 +40,8 @@ public class TestReuse {
 		////// Now we create some examples Cases for this Domain
 		// CASE 1
 		Case c1 = new Case(dom1);
-		c1.addAttribute((Object) "meat", "ingredient1", "String");
-		c1.addAttribute((Object) "shit", "ingredient2", "String");
+		c1.addAttribute((Object) "meat", "ingredient", "String");
+		c1.addAttribute((Object) "shit", "ingredient", "String");
 		c1.addAttribute((Object) "true", "fried", "Boolean");
 		c1.addAttribute((Object) "150.0", "time", "Float");
 		lib.addCase(c1);
@@ -49,28 +49,28 @@ public class TestReuse {
 		////// Now we create some examples Cases for this Domain
 		// CASE 2
 		Case c2 = new Case(dom1);
-		c2.addAttribute((Object) "fish", "ingredient1", "String");
-		c2.addAttribute((Object) "shit", "ingredient2", "String");
+		c2.addAttribute((Object) "fish", "ingredient", "String");
+		c2.addAttribute((Object) "shit", "ingredient", "String");
 		c2.addAttribute((Object) "true", "fried", "Boolean");
-		c2.addAttribute((Object) "50.0", "time", "Float");
+		//c2.addAttribute((Object) "50.0", "time", "Float");
 		lib.addCase(c2);
 		
 		////// Now we create some examples Cases for this Domain
 		// CASE 3
 		Case c3 = new Case(dom1);
-		c3.addAttribute((Object) "fish", "ingredient1", "String");
-		c3.addAttribute((Object) "shit", "ingredient2", "String");
+		c3.addAttribute((Object) "fish", "ingredient", "String");
+		c3.addAttribute((Object) "shit", "ingredient", "String");
 		c3.addAttribute((Object) "false", "fried", "Boolean");
 		c3.addAttribute((Object) "50.0", "time", "Float");
 		
 		Similarity sim = new Similarity(lib);
-		Reuse r = new Reuse(sim, lib);
-		r.reuse(c3);
+		Retain r = new Retain(sim, lib);
+		r.retain(c3);
 		
 	}
 	
 	public static void main(String[] args) {
 		
-		new TestReuse();
+		new TestRetain();
 	}
 }

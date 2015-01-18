@@ -1,4 +1,4 @@
-package Reuse;
+package Retain;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,7 @@ import Case_Structure.Case;
 import Case_Structure.Case_Library;
 import Retrieval.Similarity;
 
-public class Reuse {
+public class Retain {
 	
 	private double upper_threshold;
 	private double lower_threshold;
@@ -21,7 +21,7 @@ public class Reuse {
 	 */
 	private int policy;
 	
-	public Reuse(int p, Similarity sim, Case_Library l)
+	public Retain(int p, Similarity sim, Case_Library l)
 	{
 		this.policy = p;
 		this.similarity = sim;
@@ -30,7 +30,7 @@ public class Reuse {
 		set_thresholds();
 	}
 	
-	public Reuse(Similarity sim, Case_Library l)
+	public Retain(Similarity sim, Case_Library l)
 	{
 		this.policy = 0;
 		this.similarity = sim;
@@ -70,7 +70,7 @@ public class Reuse {
 	 * @param c
 	 * @return
 	 */
-	public boolean reuse(Case c)
+	public boolean retain(Case c)
 	{
 		/* Get the mean case */
 		Case mean_case = similarity.get_mean_case(null);
