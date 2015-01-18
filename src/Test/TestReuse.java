@@ -40,8 +40,8 @@ public class TestReuse {
 		////// Now we create some examples Cases for this Domain
 		// CASE 1
 		Case c1 = new Case(dom1);
-		c1.addAttribute((Object) "meat", "ingredient1", "String");
-		c1.addAttribute((Object) "shit", "ingredient2", "String");
+		c1.addAttribute((Object) "meat", "ingredient", "String");
+		c1.addAttribute((Object) "shit", "ingredient", "String");
 		c1.addAttribute((Object) "true", "fried", "Boolean");
 		c1.addAttribute((Object) "150.0", "time", "Float");
 		lib.addCase(c1);
@@ -49,17 +49,17 @@ public class TestReuse {
 		////// Now we create some examples Cases for this Domain
 		// CASE 2
 		Case c2 = new Case(dom1);
-		c2.addAttribute((Object) "fish", "ingredient1", "String");
-		c2.addAttribute((Object) "shit", "ingredient2", "String");
+		c2.addAttribute((Object) "fish", "ingredient", "String");
+		c2.addAttribute((Object) "shit", "ingredient", "String");
 		c2.addAttribute((Object) "true", "fried", "Boolean");
-		c2.addAttribute((Object) "50.0", "time", "Float");
+		//c2.addAttribute((Object) "50.0", "time", "Float");
 		lib.addCase(c2);
 		
 		////// Now we create some examples Cases for this Domain
 		// CASE 3
 		Case c3 = new Case(dom1);
-		c3.addAttribute((Object) "fish", "ingredient1", "String");
-		c3.addAttribute((Object) "shit", "ingredient2", "String");
+		c3.addAttribute((Object) "fish", "ingredient", "String");
+		c3.addAttribute((Object) "shit", "ingredient", "String");
 		c3.addAttribute((Object) "false", "fried", "Boolean");
 		c3.addAttribute((Object) "50.0", "time", "Float");
 		
