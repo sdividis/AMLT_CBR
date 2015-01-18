@@ -156,6 +156,14 @@ public class Case {
 		return element;
 	}
 	
+	public ArrayList<Solution> getSolutions(){
+		return solution_list;
+	}
+	
+	public ArrayList<Solution_Type> getSolutionsTypes(){
+		return solution_type_list;
+	}
+	
 	/*
 	public ArrayList<Object> getAttributeValues(){
 		return attribute_value_list;
@@ -267,6 +275,11 @@ public class Case {
 				solution_list.add(pos, sol);
 			}
 		}
+	}
+	
+	public void removeAllSolutions(){
+		solution_list = new ArrayList<Solution>();
+		solution_type_list = new ArrayList<Solution_Type>();
 	}
 	
 	/**

@@ -143,7 +143,7 @@ public class Adaptation {
 	public void SubstitutionAdaptation(Case newCase, Case similarCase, Similarity sim) throws Exception {
 		//Create Case difference with similarCase
 		Case caseDiff = getCaseDifference(newCase, similarCase); // FIXME change to a more global solution
-		System.out.println("---------------------------\nCaseDifff:\n" + caseDiff.toString());
+		//System.out.println("---------------------------\nCaseDifff:\n" + caseDiff.toString());
 		// Retrieve a case which is similar to the case difference
 		ArrayList<Case> similarDiffCases = sim.getSimilarCases(caseDiff, 1); // Cases which are similar to the difference case
 		

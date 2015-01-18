@@ -87,7 +87,7 @@ public class Retain {
 		
 		if (inside_threshold(norm_dist))
 		{
-			System.out.println("-> Adding new case to Library!");
+//			System.out.println("-> Adding new case to Library!");
 			lib.addCase(c);
 			return true;
 		}

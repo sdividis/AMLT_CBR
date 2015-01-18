@@ -95,8 +95,8 @@ public class Similarity {
 		
 	    ArrayList<Integer> indices = new ArrayList<Integer>(map.values());
 
-	    System.out.println("Similarities: "+similarities);
-		System.out.println("Index \n"+indices);
+//	    System.out.println("Similarities: "+similarities);
+//		System.out.println("Index \n"+indices);
 
 		//Using the sort indices the system will built the most similar case arraylist
 		for(int i= 0; i<k; i++){
@@ -222,7 +222,7 @@ public class Similarity {
 			type = type.toLowerCase();
 			if(type.equals("float")){
 				Float normalizedValue =( (Float.valueOf((String)value) - minMap.get(name)) / (maxMap.get(name) - minMap.get(name)));
-				System.out.println("Normalized:"+normalizedValue+" Name:"+name+" Data:"+Float.valueOf((String)value)+ "Min:"+minMap.get(name)+" Max:"+maxMap.get(name));
+//				System.out.println("Normalized:"+normalizedValue+" Name:"+name+" Data:"+Float.valueOf((String)value)+ "Min:"+minMap.get(name)+" Max:"+maxMap.get(name));
 				c.setValue(j, String.valueOf(normalizedValue));
 			}
 		}
@@ -460,7 +460,7 @@ public class Similarity {
 	 * Function to normalized the lib
 	 */
 	public void normalizedLibrary(){
-		System.out.println("\nNormalizing the data...");
+		//System.out.println("\nNormalizing the data...");
 		Case c = null;
 
 		int num_cases = lib.getNumCases();
@@ -512,7 +512,6 @@ public class Similarity {
 				}
 			}	
 		}
-		System.out.println("Data was normalized!");
-
+		//System.out.println("Data was normalized!");
 	}
 }
