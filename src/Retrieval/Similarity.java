@@ -518,6 +518,15 @@ public class Similarity {
 		//System.out.println("Data was normalized!");
 	}
 
+	private boolean isIn(Object value, Case c)
+	{
+		for (Solution s : c.getSolutions())
+			for (Object val : s.getValuesAndNames())
+				if (val.equals(value))
+					return true;
+		return false;
+	}
+	
 	/**
 	 * Evaluates the accuracy of the solution of "new_case" w.r.t. its true
 	 * solution stored in "ground_truth".
@@ -528,34 +537,68 @@ public class Similarity {
 	public Double evaluateAccuracy(Case new_case, Case ground_truth) {
 		Double accuracy = 0.0;
 		
-		ArrayList<Solution> solutions = new_case.getSolutions();
-		ArrayList<Solution_Type> solutions_type = new_case.getSolutionsTypes();
+		ArrayList<Solution> solutions = new_case.getSolutions(); 
+		//ArrayList<Solution_Type> solutions_type = new_case.getSolutionsTypes();
 		ArrayList<Object> values;
 		
 		int ncorrect = 0;
 		int nexcess = 0;
 		
+		for (Solution solution :  solutions)
+		{
+			values = solution.getValuesAndNames();
+			for (Object value : values)
+			{
+				if (isIn(value, ground_truth))
+					ncorrect++;
+			}
+		}
+		
+		ArrayList<Object> caca;
+		int num_newCase = 0;
+		for (Solution solution :  new_case.getSolutions())
+		{
+			num_newCase += solution.getValuesAndNames().size();
+			caca = solution.getValuesAndNames();
+			caca.isEmpty();
+		}
+		
+		int num_GT = 0;
+		for (Solution solution :  ground_truth.getSolutions())
+		{
+			caca = solution.getValuesAndNames();
+			num_GT += solution.getValuesAndNames().size();
+			caca.isEmpty();
+		}
+		
 		/* Check if the solution is the same */
-		int numSolNewCase = new_case.getNumSolutions();
+/*		int numSolNewCase = new_case.getNumSolutions();
 		int numSolGT = new_case.getNumSolutions();
 		int numSol;
 		
 		if (Math.min(numSolNewCase, numSolGT) == numSolNewCase)
+		{
 			numSol = numSolNewCase;
+			solutions = new_case.getSolutions();
+		}
 		else
+		{
 				numSol = numSolGT;
+				solutions = ground_truth.getSolutions();
+		}
 		
 		for (int i=0; i<numSol; i++)
 		{
+			whi
 			values = solutions.get(i).getValuesAndNames();
 			if ( values.equals(ground_truth.getSolutions().get(i).getValuesAndNames()) )
 				ncorrect++;
 		}
-		
-		nexcess = Math.abs(new_case.getNumSolutions() - ground_truth.getNumSolutions());
+*/	
+		nexcess = Math.abs(num_newCase - num_GT);
 		
 		/* Compute accuracy*/
-		accuracy = (ncorrect-nexcess/(double)ground_truth.getNumSolutions());		
+		accuracy = (ncorrect-nexcess/(double)num_GT);	
 		accuracy = Math.max(accuracy, 0.0);
 		
 		return accuracy;
