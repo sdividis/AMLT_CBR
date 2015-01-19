@@ -205,6 +205,7 @@ public class Main {
 				adapt.NullAdaptation(newCase, similarCase);
 				break;
 		}
+		System.out.println(newCase.getSolutions());
 	
 		return newCase;
 	}
