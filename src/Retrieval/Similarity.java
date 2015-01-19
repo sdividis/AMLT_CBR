@@ -536,7 +536,15 @@ public class Similarity {
 		int nexcess = 0;
 		
 		/* Check if the solution is the same */
-		int numSol = new_case.getNumSolutions();
+		int numSolNewCase = new_case.getNumSolutions();
+		int numSolGT = new_case.getNumSolutions();
+		int numSol;
+		
+		if (Math.min(numSolNewCase, numSolGT) == numSolNewCase)
+			numSol = numSolNewCase;
+		else
+				numSol = numSolGT;
+		
 		for (int i=0; i<numSol; i++)
 		{
 			values = solutions.get(i).getValuesAndNames();
