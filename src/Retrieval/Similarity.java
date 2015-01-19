@@ -548,38 +548,71 @@ public class Similarity {
 		Double accuracy = 0.0;
 		
 		ArrayList<Solution> solutions = new_case.getSolutions(); 
+		ArrayList<Solution> solutions_GT = ground_truth.getSolutions(); 
 		//ArrayList<Solution_Type> solutions_type = new_case.getSolutionsTypes();
 		ArrayList<Object> values;
+		ArrayList<Object> valuesGT;
 		
-		int ncorrect = 0;
-		int nexcess = 0;
+		double ncorrect = 0.0;
+		double nexcess = 0.0;
 		
-		/* TODO: Checking equality of components. But, this is not done recursively!*/
-		for (Solution solution :  solutions)
-		{
-			values = solution.getValuesAndNames();
-			for (Object value : values)
-			{
-				if (isIn(value, ground_truth))
-					ncorrect++;
+		int nSolGT = solutions_GT.size();
+		int nSol_new = solutions.size();
+		
+		ArrayList<Integer> matched = new ArrayList<Integer>();
+		for(int i = 0; i < nSolGT; i++){
+			matched.add(0);
+		}
+		
+		// For each solution in the current case
+		double res;
+		for(int i = 0; i < nSol_new; i++){
+			values = solutions.get(i).getValuesAndNames();
+			for(int j = 0; j < nSolGT; j++){
+				if(matched.get(j) == 0){
+					valuesGT = solutions_GT.get(i).getValuesAndNames();
+					res = getAccuracyRecursive(values, valuesGT);
+					if(res > 0.0){
+						matched.remove(j);
+						matched.add(j, 1);
+						ncorrect += res;
+					}
+				}
 			}
 		}
 		
-		/* TODO: Not done recursively */
-		int num_newCase = 0;
-		for (Solution solution :  new_case.getSolutions())
-			num_newCase += solution.getValuesAndNames().size();
-		
-		int num_GT = 0;
-		for (Solution solution :  ground_truth.getSolutions())
-			num_GT += solution.getValuesAndNames().size();
-		
-		nexcess = Math.abs(num_newCase - num_GT);
-		
 		/* Compute accuracy*/
-		accuracy = ((ncorrect-nexcess)/(double)num_GT);	
-		accuracy = Math.max(accuracy, 0.0);
+		if(nSolGT > nSol_new){
+			nexcess = nSol_new - nSolGT;
+		}
+		accuracy = (ncorrect-nexcess)/nSolGT;
+		accuracy = Math.max(0.0,accuracy);
 		
 		return accuracy;
+	}
+	
+	private double getAccuracyRecursive(ArrayList<Object> values, ArrayList<Object> valuesGT){
+		double res = 0.0;
+		double ncorrect = 0.0;
+		double nexcess = 0.0;
+		double ncount = values.size()-1;
+		double nGT = valuesGT.size()-1;
+		
+		if(values.get(0).equals(valuesGT.get(0)) && values.get(1).equals(valuesGT.get(1))){
+			ncorrect += 1.0;
+		}
+		for(int i = 2; i < values.size(); i++){
+			ncorrect += getAccuracyRecursive((ArrayList<Object>)values.get(i), (ArrayList<Object>)valuesGT.get(i));
+		}
+		
+		if(nGT > ncount){
+			nexcess = ncount - nGT;
+		}
+		res = (ncorrect-nexcess)/nGT;
+		res = Math.max(0.0,res);
+		if(res > 0){
+			System.out.println("ok");
+		}
+		return res;
 	}
 }
