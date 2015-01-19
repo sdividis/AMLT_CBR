@@ -527,6 +527,16 @@ public class Similarity {
 		return false;
 	}
 	
+	private int explore_recursively(ArrayList<Object> array, int count)
+	{
+		for (Object element : array)
+			if ( !(element instanceof ArrayList) )
+				count++;
+			else
+				count =  explore_recursively((ArrayList<Object>) element, count);
+		return count;
+	}
+	
 	/**
 	 * Evaluates the accuracy of the solution of "new_case" w.r.t. its true
 	 * solution stored in "ground_truth".
@@ -544,6 +554,7 @@ public class Similarity {
 		int ncorrect = 0;
 		int nexcess = 0;
 		
+		/* TODO: Checking equality of components. But, this is not done recursively!*/
 		for (Solution solution :  solutions)
 		{
 			values = solution.getValuesAndNames();
@@ -554,51 +565,19 @@ public class Similarity {
 			}
 		}
 		
-		ArrayList<Object> caca;
+		/* TODO: Not done recursively */
 		int num_newCase = 0;
 		for (Solution solution :  new_case.getSolutions())
-		{
 			num_newCase += solution.getValuesAndNames().size();
-			caca = solution.getValuesAndNames();
-			caca.isEmpty();
-		}
 		
 		int num_GT = 0;
 		for (Solution solution :  ground_truth.getSolutions())
-		{
-			caca = solution.getValuesAndNames();
 			num_GT += solution.getValuesAndNames().size();
-			caca.isEmpty();
-		}
 		
-		/* Check if the solution is the same */
-/*		int numSolNewCase = new_case.getNumSolutions();
-		int numSolGT = new_case.getNumSolutions();
-		int numSol;
-		
-		if (Math.min(numSolNewCase, numSolGT) == numSolNewCase)
-		{
-			numSol = numSolNewCase;
-			solutions = new_case.getSolutions();
-		}
-		else
-		{
-				numSol = numSolGT;
-				solutions = ground_truth.getSolutions();
-		}
-		
-		for (int i=0; i<numSol; i++)
-		{
-			whi
-			values = solutions.get(i).getValuesAndNames();
-			if ( values.equals(ground_truth.getSolutions().get(i).getValuesAndNames()) )
-				ncorrect++;
-		}
-*/	
 		nexcess = Math.abs(num_newCase - num_GT);
 		
 		/* Compute accuracy*/
-		accuracy = (ncorrect-nexcess/(double)num_GT);	
+		accuracy = ((ncorrect-nexcess)/(double)num_GT);	
 		accuracy = Math.max(accuracy, 0.0);
 		
 		return accuracy;
