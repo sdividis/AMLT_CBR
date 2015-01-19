@@ -8,6 +8,8 @@ import java.util.TreeMap;
 
 import Case_Structure.Case;
 import Case_Structure.Case_Library;
+import Case_Structure.Solution;
+import Case_Structure.Solution_Type;
 
 import java.math.*;
 
@@ -517,7 +519,7 @@ public class Similarity {
 	}
 
 	/**
-	 * Avaluates the accuracy of the solution of "new_case" w.r.t. its true
+	 * Evaluates the accuracy of the solution of "new_case" w.r.t. its true
 	 * solution stored in "ground_truth".
 	 * @param new_case Case with a predicted solution provided by the CBR system.
 	 * @param ground_truth Case with the true solution of new_case.
@@ -525,10 +527,29 @@ public class Similarity {
 	 */
 	public Double evaluateAccuracy(Case new_case, Case ground_truth) {
 		Double accuracy = 0.0;
-
 		
+		ArrayList<Solution> solutions = new_case.getSolutions();
+		ArrayList<Solution_Type> solutions_type = new_case.getSolutionsTypes();
+		ArrayList<Object> values;
 		
+		int ncorrect = 0;
+		int nexcess = 0;
+		
+		/* Check if the solution is the same */
+		int numSol = new_case.getNumSolutions();
+		for (int i=0; i<numSol; i++)
+		{
+			values = solutions.get(i).getValuesAndNames();
+			if ( values.equals(ground_truth.getSolutions().get(i).getValuesAndNames()) )
+				ncorrect++;
+		}
+		
+		nexcess = Math.abs(new_case.getNumSolutions() - ground_truth.getNumSolutions());
+		
+		/* Compute accuracy*/
+		accuracy = (ncorrect-nexcess/(double)ground_truth.getNumSolutions());		
 		accuracy = Math.max(accuracy, 0.0);
+		
 		return accuracy;
 	}
 }
