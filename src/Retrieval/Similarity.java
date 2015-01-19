@@ -610,9 +610,12 @@ public class Similarity {
 		}
 		res = (ncorrect-nexcess)/nGT;
 		res = Math.max(0.0,res);
-		if(res > 0){
-			System.out.println("ok");
-		}
 		return res;
+	}
+	
+	public Double evaluateMSE(Case new_case, Case ground_truth) {
+		ArrayList<Object> value = new_case.getSolutions().get(0).getValuesAndNames();
+		ArrayList<Object> valueGT = ground_truth.getSolutions().get(0).getValuesAndNames();
+		return Math.pow((Double.parseDouble((String)value.get(0)) - Double.parseDouble((String)valueGT.get(0))), 2);
 	}
 }

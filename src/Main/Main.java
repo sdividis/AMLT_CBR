@@ -45,10 +45,11 @@ public class Main {
 		
 		int id_test = 1;
 		float prop_test = 1/8f;
+		int type_eval = 2; // (1 = general, 2 = MSE)
 		
 		// We apply a CBR accuracy test on the dataset identified 
 		// by id_test splitting prop_test of the cases for test
-		finalTests(id_test, prop_test);
+		finalTests(id_test, prop_test, type_eval);
 	}
 	
 	
@@ -56,10 +57,11 @@ public class Main {
 	 * Mehtod to compute the final tests
 	 * @param id_test int identification of the Dataset used for the tests
 	 * @param prop_test float indication the proportion of cases used for testing
+	 * @param type_eval int selecting the evaluation type (1 = general, 2 = MSE)
 	 * @return
 	 * @throws Exception 
 	 */
-	public static boolean finalTests(int id_test, float prop_test) throws Exception{
+	public static boolean finalTests(int id_test, float prop_test, int type_eval) throws Exception{
 		//Create and read the dataset structure
 		loadAndReadDataset(id_test);
 		
@@ -102,7 +104,11 @@ public class Main {
 			//ArrayList<Solution_Type> solutionsTypesRevised = revisedCase.getSolutionsTypes();
 			
 			// Compute the accuracy of the solution using the real solution of the case
-			error = 1 - similarity.evaluateAccuracy(revisedCase, c_GT);
+			if(type_eval == 1){
+				error = 1 - similarity.evaluateAccuracy(revisedCase, c_GT);
+			}else if(type_eval == 2){
+				error = similarity.evaluateMSE(revisedCase, c_GT);
+			}
 			//error = checkSolutions(revisedCase, c_GT);
 			totalError += error;
 		}
@@ -194,12 +200,11 @@ public class Main {
 		
 		Adaptation adapt = new Adaptation(path+"AdaptationKnowledge", trainDataset);
 		Case newCase = trainDataset.getCase(0);
-		newCase.removeAllSolutions();
 		if(debug) System.out.println("The case was adapted!");
 		
 		switch(k){
 			case SUBSTITUTION_ADAPTATION:
-				adapt.SubstitutionAdaptation(newCase, similarCase, similarity);
+				adapt.SubstitutionAdaptation(similarCase, newCase, similarity);
 				break;
 			case NULL_ADAPTATION:
 				adapt.NullAdaptation(newCase, similarCase);
