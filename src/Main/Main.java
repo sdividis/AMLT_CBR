@@ -91,7 +91,7 @@ public class Main {
 			Case similarCase = similarCase(c,1);	
 			
 			//REUSE - Adapt the similar case to the new solution
-			Case adaptedCase = adaptationCase(similarCase, 1,1); 
+			Case adaptedCase = adaptationCase(c, similarCase, 1,1); 
 			
 			//REVISE - Revise the case
 			Case revisedCase = revisionCase(adaptedCase,1);
@@ -187,7 +187,7 @@ public class Main {
 	 * Method to adapt the most similar case
 	 * @throws Exception 
 	 */
-	private static Case adaptationCase(Case similarCase, int k, int dataset) throws Exception{
+	private static Case adaptationCase(Case newCase, Case similarCase, int k, int dataset) throws Exception{
 		String path = "";
 		switch(dataset){
 		case 1:
@@ -199,8 +199,6 @@ public class Main {
 		}
 		
 		Adaptation adapt = new Adaptation(path+"AdaptationKnowledge", trainDataset);
-		Case newCase = trainDataset.getCase(0);
-		newCase.removeAllSolutions();
 		if(debug) System.out.println("The case was adapted!");
 		
 		switch(k){
