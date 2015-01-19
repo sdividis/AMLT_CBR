@@ -324,12 +324,22 @@ public class Case {
 	}
 	
 	/**
-	 * Copies the solution from case c into the this case.
+	 * Copies the solution from case c into this case.
 	 * @param c Case to get the solution from
 	 */
 	public void copySolution(Case c) {
 		this.solution_type_list = c.solution_type_list;
 		this.solution_list = c.solution_list;
+	}
+	
+	/**
+	 * Copies the attributes from case c into this case.
+	 * @param c Case to get the attributes from
+	 */
+	public void copyAttributes(Case c){
+		this.attribute_value_list = c.attribute_value_list;
+		this.attribute_name_list = c.attribute_name_list;
+		this.attribute_type_list = c.attribute_type_list;
 	}
 
 }

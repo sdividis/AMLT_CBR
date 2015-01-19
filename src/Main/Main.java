@@ -27,6 +27,7 @@ public class Main {
 	private static Case_Library trainDataset;
 	private static Case_Library testDataset;
 	private static Similarity similarity;
+	private static Retain retain;
 	
 	private static boolean debug = false;
 	
@@ -41,34 +42,47 @@ public class Main {
 	
 	
 	public static void main(String[] args) throws Exception {
-		finalTests();
+		
+		int id_test = 1;
+		float prop_test = 1/8f;
+		
+		// We apply a CBR accuracy test on the dataset identified 
+		// by id_test splitting prop_test of the cases for test
+		finalTests(id_test, prop_test);
 	}
 	
 	
 	/**
 	 * Mehtod to compute the final tests
+	 * @param id_test int identification of the Dataset used for the tests
+	 * @param prop_test float indication the proportion of cases used for testing
 	 * @return
 	 * @throws Exception 
 	 */
-	public static boolean finalTests() throws Exception{		
+	public static boolean finalTests(int id_test, float prop_test) throws Exception{
 		//Create and read the dataset structure
-		loadAndReadDataset(1);
+		loadAndReadDataset(id_test);
 		
 		//Split the data into train and test
-		splitDataset();
+		splitDataset(prop_test);
 		
 		int numTestCases = testDataset.getNumCases();
 		similarity = new Similarity(trainDataset);
 
-		float totalError = 0;
-		float error = 0;
+		Double totalError = 0.0;
+		Double error = 0.0;
 		
 		for(int i=0; i<numTestCases; i++){
 			Case c = testDataset.getCase(i);
 			
+			// Keep a ground truth copy of the original case (for accuracy evaluation)
+			Case c_GT = new Case(c.getDomain());
+			c_GT.copyAttributes(c);
+			c_GT.copySolution(c);
+			
 			//Remove the solution of the test case
-			ArrayList<Solution> solutions = c.getSolutions();
-			ArrayList<Solution_Type> solutionsTypes = c.getSolutionsTypes();
+			//ArrayList<Solution> solutions = c.getSolutions();
+			//ArrayList<Solution_Type> solutionsTypes = c.getSolutionsTypes();
 			c.removeAllSolutions();
 			
 			//RETRIEVE - Looking for the similar cases
@@ -84,15 +98,17 @@ public class Main {
 			retainCase(revisedCase);
 			
 			//Compare the results for measure the accuracy
-			ArrayList<Solution> solutionsRevised = revisedCase.getSolutions();
-			ArrayList<Solution_Type> solutionsTypesRevised = revisedCase.getSolutionsTypes();
+			//ArrayList<Solution> solutionsRevised = revisedCase.getSolutions();
+			//ArrayList<Solution_Type> solutionsTypesRevised = revisedCase.getSolutionsTypes();
 			
-			//Compute the accuracy of the solution using the real solution of the case
-			error = checkSolutions(solutions, solutionsTypes, solutionsRevised, solutionsTypesRevised);
+			// Compute the accuracy of the solution using the real solution of the case
+			error = 1 - similarity.evaluateAccuracy(revisedCase, c_GT);
+			//error = checkSolutions(revisedCase, c_GT);
 			totalError += error;
 		}
 		
 		System.out.println("Total error = "+totalError+"/"+numTestCases);
+		System.out.println("Total error = "+(totalError/numTestCases));
 		return true;
 	}
 	
@@ -121,10 +137,10 @@ public class Main {
 	
 	
 	/**
-	 * Method two split the dataset into train and test dataset
+	 * Method to split the dataset into train and test dataset
 	 */
-	private static void splitDataset(){
-		int testCases = (lib.getNumCases())/8;
+	private static void splitDataset(float prop_test){
+		int testCases = Math.round((lib.getNumCases()) * prop_test);
 		trainDataset = new Case_Library();
 		testDataset = new Case_Library();
 		
@@ -236,14 +252,29 @@ public class Main {
 	
 	/**
 	 * Method to check if the two solutions are equal or not
-	 * @param solutions Solutions of the first case
-	 * @param solutionsTypes Solutions types of the first case
-	 * @param solutionsRevised Solutions of the revised version
-	 * @param solutionsTypesRevised Solutions of the revise version
-	 * @return
+	 * @param new_case Case with the solution proposed by the CBR system
+	 * @param ground_truth Case with the original ground_truth solution
+	 * @return error value (between 0 = perfect or 1 = completely wrong).
 	 */
-	private static float checkSolutions(ArrayList<Solution> solutions, ArrayList<Solution_Type> solutionsTypes, ArrayList<Solution> solutionsRevised, ArrayList<Solution_Type> solutionsTypesRevised){
-		float error = 0;
+	private static Double checkSolutions(Case new_case, Case ground_truth){
+		
+		/*
+		// Compare cases' solutions
+		new_case = similarity.normalize_case(new_case);
+		ground_truth = similarity.normalize_case(ground_truth);
+		
+		// Compute euclidean distances with GT and all cases from library
+		ArrayList<Double> distances = similarity.compute_distances_all_cases(ground_truth);
+		
+		// Compute the distance between the mean case and normalized c
+		Double dist = similarity.compute_distance(ground_truth, new_case);
+		
+		// Normalize the distance
+		retain = new Retain(similarity, trainDataset);
+		Double error = retain.normalize(distances, dist);
+		*/
+		
+		Double error = 1 - similarity.evaluateAccuracy(new_case, ground_truth);
 		return error;
 	}
 	

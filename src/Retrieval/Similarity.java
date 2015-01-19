@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import Case_Structure.Case;
 import Case_Structure.Case_Library;
+
 import java.math.*;
 
 
@@ -110,7 +111,7 @@ public class Similarity {
 	/**
 	 * Method that compute the KNN algorithm giving the most similar cases
 	 * @param targetCase The new case
-	 * @param c Case of the our Case Library
+	 * @param c Case of our Case Library
 	 * @return Return the similarity value
 	 * @author Albert Busqué
 	 */
@@ -513,5 +514,21 @@ public class Similarity {
 			}	
 		}
 		//System.out.println("Data was normalized!");
+	}
+
+	/**
+	 * Avaluates the accuracy of the solution of "new_case" w.r.t. its true
+	 * solution stored in "ground_truth".
+	 * @param new_case Case with a predicted solution provided by the CBR system.
+	 * @param ground_truth Case with the true solution of new_case.
+	 * @return Double with the accuracy of this precise solution (from 0 to 1).
+	 */
+	public Double evaluateAccuracy(Case new_case, Case ground_truth) {
+		Double accuracy = 0.0;
+
+		
+		
+		accuracy = Math.max(accuracy, 0.0);
+		return accuracy;
 	}
 }

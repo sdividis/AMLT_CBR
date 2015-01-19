@@ -63,10 +63,10 @@ public class Retain {
 	}
 	
 	/**
-	 * Method that implements reuse step. 
+	 * Method that implements retain step. 
 	 * First, all distances are computed between c and all cases in library. 
 	 * Then, the mean distance is computed and later normalized between [0,1].
-	 * Finally, according to the policy, it will be reused or not.
+	 * Finally, according to the policy, it will be retained or not.
 	 * @param c
 	 * @return
 	 */
@@ -127,7 +127,7 @@ public class Retain {
 	 * @param x
 	 * @return
 	 */
-	private Double normalize(ArrayList<Double> vector, Double x)
+	public Double normalize(ArrayList<Double> vector, Double x)
 	{
 		Double max = Double.MAX_VALUE;
 	    Double min = Double.MIN_VALUE;
