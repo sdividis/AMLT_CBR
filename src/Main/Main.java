@@ -200,11 +200,12 @@ public class Main {
 		
 		Adaptation adapt = new Adaptation(path+"AdaptationKnowledge", trainDataset);
 		Case newCase = trainDataset.getCase(0);
+		newCase.removeAllSolutions();
 		if(debug) System.out.println("The case was adapted!");
 		
 		switch(k){
 			case SUBSTITUTION_ADAPTATION:
-				adapt.SubstitutionAdaptation(similarCase, newCase, similarity);
+				adapt.SubstitutionAdaptation(newCase, similarCase, similarity);
 				break;
 			case NULL_ADAPTATION:
 				adapt.NullAdaptation(newCase, similarCase);
